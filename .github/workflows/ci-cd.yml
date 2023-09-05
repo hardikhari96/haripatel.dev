@@ -7,7 +7,7 @@ on:
   
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/kubectl/first
+  IMAGE_NAME: kubectl/first
 
 jobs:
   build:
