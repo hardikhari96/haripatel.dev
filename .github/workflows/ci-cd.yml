@@ -20,7 +20,7 @@ jobs:
       - name : echo
         run : echo ${{secrets.HARI}}
       - name: Log in to the Container registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -28,11 +28,11 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v1
         with:
           context: .
           push: true
