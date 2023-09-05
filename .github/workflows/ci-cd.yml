@@ -1,0 +1,43 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: kubectl/first
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      
+      - name: Build and publish Docker image
+        run: |
+          echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+      
+      - name: Login to GHCR
+        uses: docker-io/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to production
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Apply Kubernetes deployment
+        run: |
+          kubectl apply -f .k8\deployment.yaml --namespace=default
