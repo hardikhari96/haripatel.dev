@@ -1,0 +1,4 @@
+kubectl create secret docker-registry github-packages-secret \
+  --docker-server=ghcr.io \
+  --docker-username=hardikhari96 \
+  --docker-password=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
