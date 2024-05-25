@@ -3,7 +3,7 @@ name: CI/CD Workflow
 on:
   push:
     branches:
-      - main
+      - devv
   
 env:
   REGISTRY: ghcr.io
@@ -14,30 +14,26 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
-      - name: Build and publish Docker image
-        run: |
-          echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
-      
-      - name: Login to GHCR
-        uses: docker-io/login-action@v1
+      - name: Log in to the Container registry 
+        uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+          logout: true 
 
-  deploy:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Deploy to production
-        uses: azure/k8s-set-context@v1
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-
-      - name: Apply Kubernetes deployment
-        run: |
-          kubectl apply -f .k8\deployment.yaml --namespace=default
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

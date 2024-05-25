@@ -9,4 +9,4 @@ CMD [ "node", "server.js" ]
 
 
 # docker build  . -t ghcr.io/hardikhari96/kubectl/first:latest
-# docker push ghcr.io/hardikhari96/kubectl/first:latest
+# docker push ghcr.io/hardikhari96/kubectl/first:latest 

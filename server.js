@@ -1,17 +1,18 @@
 const express = require('express');
+const ejs = require('ejs');
+const path = require('path');
 const app = express();
+
 const port = 3000;
 
 const podIP = process.env.POD_IP || 'IP not available';
 
-app.all('*',(req,res)=>{
-    const html = `
-    
-    <h1 style="margin:10px;text-align:center"> Hello , This site is hosted in K8 <br> Pod IP: ${podIP} </h1>  
-    
-    `;
+app.get('/',async (req,res)=>{
+    let html =  await ejs.renderFile(path.join(__dirname,'./views/resume.html'),{podIP});
     res.send(html);
 })
+
+app.use('/',express.static('public'));
 
 app.listen(port,()=>{
     console.log(`http://localhost:${port} server is running`);
