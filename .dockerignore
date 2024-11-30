@@ -1,0 +1,6 @@
+secrate.txt
+node_modules
+.config
+.github
+.k8
+deploy.sh
