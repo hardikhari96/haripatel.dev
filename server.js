@@ -6,9 +6,9 @@ const app = express();
 const port = 3000;
 
 const podIP = process.env.POD_IP || 'IP not available';
-
+const nodeIP = process.env.NODE_IP || 'IP not available';
 app.get('/',async (req,res)=>{
-    let html =  await ejs.renderFile(path.join(__dirname,'./views/resume.html'),{podIP});
+    let html =  await ejs.renderFile(path.join(__dirname,'./views/resume.html'),{podIP,nodeIP});
     res.send(html);
 })
 
