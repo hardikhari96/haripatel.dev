@@ -20,6 +20,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         imagePullPolicy: Always
       imagePullSecrets:
       - name: github-packages-secret
