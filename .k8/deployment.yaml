@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-nodejs-app
-        image: ghcr.io/hardikhari96/kubectl/cv:latest
+        image: ghcr.io/hardikhari96/kubectl/cv:1.0
         env:
         - name: POD_IP
           valueFrom:

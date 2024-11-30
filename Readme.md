@@ -44,14 +44,14 @@ kubectl logs -n ingress-nginx  ingress-nginx-controller-7f9bbf6ddd-tmntx --follo
 docker build 
 
 ```
-docker build  . -t ghcr.io/hardikhari96/kubectl/cv:latest
+docker build  . -t ghcr.io/hardikhari96/kubectl/cv:1.0
 ```
 
 
 docker push 
 
 ```
-docker push  ghcr.io/hardikhari96/kubectl/cv:latest
+docker push  ghcr.io/hardikhari96/kubectl/cv:1.0
 ```
 
 
