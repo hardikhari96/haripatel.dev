@@ -1,1 +1,0 @@
-docker build  . -t ghcr.io/hardikhari96/kubectl/first:latest && docker push ghcr.io/hardikhari96/kubectl/first:latest && kubectl apply -f ./.k8/deployment.yaml
