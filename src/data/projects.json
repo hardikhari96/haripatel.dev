@@ -1,0 +1,26 @@
+
+[
+  {
+    "id": "investment-platform",
+    "name": "Investment Platform",
+    "description": "Web app for investment product management with cross-functional workflow, vendor integration, and scalable architecture.",
+    "tech": ["Angular", "Node.js", "FastAPI", "GCP", "MongoDB"],
+    "github": "https://github.com/harikrushnapatel/investment-platform",
+    "live": "https://investment-demo.haripatel.dev"
+  },
+  {
+    "id": "badminton-tournament",
+    "name": "Badminton Tournament System",
+    "description": "Automated scoring and tournament management with custom backend, real-time stats, and secure user authentication.",
+    "tech": ["React", "Node.js", "FastAPI", "MySQL"],
+    "github": "https://github.com/harikrushnapatel/badminton-tournament",
+    "live": "https://badminton.haripatel.dev"
+  },
+  {
+    "id": "deployment-automation-toolkit",
+    "name": "Deployment Automation Toolkit",
+    "description": "Scripts and dashboards for automated CI/CD, deployment to cloud, monitoring, and error reporting.",
+    "tech": ["Python", "Docker", "Kubernetes", "GCP", "GitHub Actions"],
+    "github": "https://github.com/harikrushnapatel/deployment-toolkit"
+  }
+]
