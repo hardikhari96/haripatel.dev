@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import SkillsSection from "@/components/SkillsSection";
 import ContactForm from "@/components/ContactForm";
+import AboutSection from "@/components/AboutSection";
+import { Phone, Mail, MapPin, Link as LinkIcon } from "lucide-react";
 
 const projects = [
   {
@@ -41,14 +43,23 @@ const Index = () => {
             Building scalable apps and robust systems.<br/> Passionate about solving problems and learning new technologies.
           </p>
           <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-2 justify-center items-center mb-2">
-            <span><strong>Ahmedabad, India</strong></span>
+            <span className="flex items-center gap-1"><MapPin size={16} /> <strong>Ahmedabad, India</strong></span>
             <span className="hidden md:inline mx-2">|</span>
-            <span><strong>Email:</strong> <a href="mailto:mail@haripatel.dev" className="underline hover:text-primary">mail@haripatel.dev</a></span>
+            <span className="flex items-center gap-1"><Phone size={16} /> <strong>+91-81283-43262</strong></span>
             <span className="hidden md:inline mx-2">|</span>
-            <span><strong>Further Links:</strong> <a href="https://haripatel.dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">haripatel.dev</a></span>
+            <span className="flex items-center gap-1"><Mail size={16} /> <strong>Email:</strong> <a href="mailto:mail@haripatel.dev" className="underline hover:text-primary">mail@haripatel.dev</a></span>
+            <span className="hidden md:inline mx-2">|</span>
+            <span className="flex items-center gap-1">
+              <LinkIcon size={16} />
+              <strong>Further Links:</strong>
+              <a href="https://haripatel.dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary ml-1">haripatel.dev</a>
+            </span>
           </div>
         </div>
       </section>
+
+      {/* ABOUT SECTION */}
+      <AboutSection />
 
       {/* PROJECTS SECTION */}
       <section id="projects" className="py-16 bg-gray-50">
@@ -69,6 +80,20 @@ const Index = () => {
       <section id="contact" className="py-14 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6 text-center">Contact</h2>
+          <div className="mb-6 flex flex-col items-center text-gray-600 gap-1">
+            <div className="flex items-center gap-1">
+              <Phone size={16} />
+              <span className="ml-1">+91-81283-43262</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Mail size={16} />
+              <span className="ml-1">mail@haripatel.dev</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <MapPin size={16} />
+              <span className="ml-1">Ahmedabad</span>
+            </div>
+          </div>
           <ContactForm />
         </div>
       </section>

@@ -6,36 +6,38 @@ const skills = [
     title: "Frontend Development",
     details: [
       "Angular, React, TypeScript, JavaScript (ES6+)",
-      "HTML & CSS, Responsive Design"
+      "HTML & CSS, Responsive Design, Bootstrap"
     ]
   },
   {
     title: "Backend Development",
     details: [
-      "Node.js, FastAPI",
-      "Authentication (OAuth, JWT)",
+      "Node.js, FastAPI (Python) micro-services architecture",
+      "Expertise in authentication and authorization (OAuth, JWT)",
       "RabbitMQ, ElasticSearch"
     ]
   },
   {
     title: "Database Development",
     details: [
-      "MySQL, PostgreSQL, MongoDB, Redis",
-      "Data design, optimization, migration"
+      "SQL (MySQL, PostgreSQL), NoSQL (MongoDB, Redis)",
+      "Database design, optimization, migration"
     ]
   },
   {
-    title: "DevOps & Deployment",
+    title: "Server Management & DevOps",
     details: [
-      "Linux server management, NGINX, Apache",
-      "CI/CD (GitHub, GitLab, Bitbucket), Docker, Kubernetes",
+      "Linux server management, NGINX, Apache, automation",
+      "CI/CD: GitHub, GitLab, Bitbucket",
+      "Docker, Kubernetes",
       "Cloud: AWS, DigitalOcean, GCP, Oracle Cloud"
     ]
   },
   {
     title: "Additional Skills",
     details: [
-      "Git, Teamwork, Problem Solving"
+      "Git, Teamwork, Problem Solving",
+      "Strong collaborative and communication skills"
     ]
   }
 ];
