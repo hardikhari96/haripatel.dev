@@ -3,29 +3,10 @@ import ProjectCard from "@/components/ProjectCard";
 import SkillsSection from "@/components/SkillsSection";
 import AboutSection from "@/components/AboutSection";
 import { Mail, MapPin, Link as LinkIcon, Linkedin, FileDown } from "lucide-react";
+import projects from "@/data/projects.json";
 
-const projects = [
-  {
-    name: "Investment Platform",
-    description: "Web app for investment product management with cross-functional workflow, vendor integration, and scalable architecture.",
-    tech: ["Angular", "Node.js", "FastAPI", "GCP", "MongoDB"],
-    github: "https://github.com/harikrushnapatel/investment-platform",
-    live: "https://investment-demo.haripatel.dev"
-  },
-  {
-    name: "Badminton Tournament System",
-    description: "Automated scoring and tournament management with custom backend, real-time stats, and secure user authentication.",
-    tech: ["React", "Node.js", "FastAPI", "MySQL"],
-    github: "https://github.com/harikrushnapatel/badminton-tournament",
-    live: "https://badminton.haripatel.dev"
-  },
-  {
-    name: "Deployment Automation Toolkit",
-    description: "Scripts and dashboards for automated CI/CD, deployment to cloud, monitoring, and error reporting.",
-    tech: ["Python", "Docker", "Kubernetes", "GCP", "GitHub Actions"],
-    github: "https://github.com/harikrushnapatel/deployment-toolkit"
-  }
-];
+// Update project data to match the structure expected by ProjectCard
+const updatedProjects = projects.slice(0, 3);
 
 const Index = () => {
   return (
@@ -94,7 +75,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8 text-center">Projects</h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
+            {updatedProjects.map((project) => (
               <ProjectCard key={project.name} {...project} />
             ))}
           </div>
