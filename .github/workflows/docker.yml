@@ -25,7 +25,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/turiyadigitals/haripatel-dev-v2
+          ghcr.io/hardikhari96/kubectl/haripatel-dev-v2
         tags: |
           type=semver,pattern={{version}}
           type=sha,pattern=sha-{{sha}}
