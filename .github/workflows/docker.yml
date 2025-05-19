@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:  # 👈 Add this to grant GITHUB_TOKEN rights for packages
+      contents: read
+      packages: write
+
     steps:
     - uses: actions/checkout@v3
 
@@ -24,13 +28,12 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: |
-          ghcr.io/hardikhari96/kubectl/haripatel-dev-v2
+        images: ghcr.io/hardikhari96/kubectl/haripatel-dev-v2
         tags: |
-          type=semver,pattern={{version}}
-          type=sha,pattern=sha-{{sha}}
           type=ref,event=branch
-          type=ref,event=pr
+          type=sha
+        labels: |
+          org.opencontainers.image.source=${{ github.repository }}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
