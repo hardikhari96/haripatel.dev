@@ -3,9 +3,8 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import SkillsSection from "@/components/SkillsSection";
-import ContactForm from "@/components/ContactForm";
 import AboutSection from "@/components/AboutSection";
-import { Phone, Mail, MapPin, Link as LinkIcon } from "lucide-react";
+import { Mail, MapPin, Link as LinkIcon, Linkedin, FileDown } from "lucide-react";
 
 const projects = [
   {
@@ -35,25 +34,65 @@ const Index = () => {
     <div className="font-inter">
       <Navbar />
       {/* HERO SECTION */}
-      <section id="home" className="min-h-[50vh] bg-white bg-gradient-to-b from-white to-gray-50 flex flex-col justify-center items-center py-20">
+      <section
+        id="home"
+        className="min-h-[50vh] bg-white bg-gradient-to-b from-white to-gray-50 flex flex-col justify-center items-center py-20"
+      >
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-2">Harikrushna Patel</h1>
           <h2 className="text-lg md:text-xl font-medium text-gray-600 mb-4">Full Stack Developer</h2>
           <p className="text-gray-700 mb-4">
-            Building scalable apps and robust systems.<br/> Passionate about solving problems and learning new technologies.
+            Building scalable apps and robust systems.
+            <br /> Passionate about solving problems and learning new technologies.
           </p>
-          <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-2 justify-center items-center mb-2">
-            <span className="flex items-center gap-1"><MapPin size={16} /> <strong>Ahmedabad, India</strong></span>
+          <div className="flex flex-col md:flex-row gap-2 justify-center items-center text-sm text-gray-500 mb-2">
+            <span className="flex items-center gap-1">
+              <MapPin size={16} /> <strong>Ahmedabad, India</strong>
+            </span>
             <span className="hidden md:inline mx-2">|</span>
-            <span className="flex items-center gap-1"><Phone size={16} /> <strong>+91-81283-43262</strong></span>
-            <span className="hidden md:inline mx-2">|</span>
-            <span className="flex items-center gap-1"><Mail size={16} /> <strong>Email:</strong> <a href="mailto:mail@haripatel.dev" className="underline hover:text-primary">mail@haripatel.dev</a></span>
+            <span className="flex items-center gap-1">
+              <Mail size={16} /> <strong>Email:</strong>
+              <a
+                href="mailto:mail@haripatel.dev"
+                className="underline hover:text-primary"
+              >
+                mail@haripatel.dev
+              </a>
+            </span>
             <span className="hidden md:inline mx-2">|</span>
             <span className="flex items-center gap-1">
               <LinkIcon size={16} />
-              <strong>Further Links:</strong>
-              <a href="https://haripatel.dev" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary ml-1">haripatel.dev</a>
+              <strong>Website:</strong>
+              <a
+                href="https://haripatel.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary ml-1"
+              >
+                haripatel.dev
+              </a>
             </span>
+            <span className="hidden md:inline mx-2">|</span>
+            <span className="flex items-center gap-1">
+              <Linkedin size={16} />
+              <a
+                href="https://www.linkedin.com/in/iharipatel/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary ml-1"
+              >
+                LinkedIn
+              </a>
+            </span>
+            <span className="hidden md:inline mx-2">|</span>
+            <a
+              href="/cv-harikrushna-patel.pdf"
+              download
+              className="flex items-center gap-1 bg-primary text-white rounded px-2.5 py-1 hover:bg-primary/80 transition-colors text-sm ml-1"
+              title="Download CV"
+            >
+              <FileDown size={16} /> CV
+            </a>
           </div>
         </div>
       </section>
@@ -76,27 +115,7 @@ const Index = () => {
       {/* SKILLS SECTION */}
       <SkillsSection />
 
-      {/* CONTACT SECTION */}
-      <section id="contact" className="py-14 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6 text-center">Contact</h2>
-          <div className="mb-6 flex flex-col items-center text-gray-600 gap-1">
-            <div className="flex items-center gap-1">
-              <Phone size={16} />
-              <span className="ml-1">+91-81283-43262</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Mail size={16} />
-              <span className="ml-1">mail@haripatel.dev</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MapPin size={16} />
-              <span className="ml-1">Ahmedabad</span>
-            </div>
-          </div>
-          <ContactForm />
-        </div>
-      </section>
+      {/* CONTACT SECTION REMOVED FROM HOME PAGE */}
 
       {/* FOOTER */}
       <footer className="py-8 text-gray-400 text-center text-xs bg-white border-t">

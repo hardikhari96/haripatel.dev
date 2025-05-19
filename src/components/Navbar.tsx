@@ -1,13 +1,14 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Linkedin } from "lucide-react";
 
 const links = [
   { label: "Home", href: "/" },
   { label: "About", href: "#about" },
   { label: "Projects", href: "/projects" },
   { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
@@ -16,7 +17,6 @@ const Navbar = () => {
   // Determine if link is anchor or route
   const renderLink = (link: typeof links[0]) => {
     const isRoute = link.href.startsWith("/");
-
     if (isRoute) {
       return (
         <Link
@@ -42,11 +42,31 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 left-0 w-full bg-white z-10 border-b border-gray-100 font-inter">
       <div className="container mx-auto flex justify-between items-center py-3">
-        <span className="text-lg font-bold tracking-tight">Harikrushna Patel</span>
+        <span className="text-lg font-bold tracking-tight flex items-center gap-2">
+          Harikrushna Patel
+          <a
+            href="https://www.linkedin.com/in/iharipatel/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 text-primary hover:text-primary/80"
+            title="LinkedIn"
+          >
+            <Linkedin size={20} />
+          </a>
+        </span>
         <ul className="flex gap-6">
           {links.map((link) => (
             <li key={link.label}>{renderLink(link)}</li>
           ))}
+          <li>
+            <a
+              href="/cv-harikrushna-patel.pdf"
+              download
+              className="bg-primary text-white px-3 py-1 rounded hover:bg-primary/90 transition-colors font-semibold text-sm"
+            >
+              Download CV
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
