@@ -1,6 +1,14 @@
 
 [
   {
+    "id": "trading-platform",
+    "name": "Trading Platform",
+    "description": "Real-time trading platform with MCP integration, SSE-based updates, and Zerodha Kite API integration. Built with TypeScript, Node.js, and EJS templates.",
+    "tech": ["TypeScript", "Node.js", "EJS", "Zerodha Kite API", "SSE", "MCP"],
+    "live": "https://trading.mcp-hub.site",
+    "image": "https://images.unsplash.com/photo-1518791841217-8f162f1e1131"
+  },
+  {
     "id": "investment-platform",
     "name": "Investment Platform",
     "description": "Web app for investment product management with cross-functional workflow, vendor integration, and scalable architecture.",
@@ -17,14 +25,5 @@
     "github": "https://github.com/example/badminton-tournament",
     "live": "https://badminton-tournament.example.com",
     "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085"
-  },
-  {
-    "id": "deployment-automation-toolkit",
-    "name": "Deployment Automation Toolkit",
-    "description": "Automated deployment solution for cloud infrastructure with CI/CD integration and monitoring capabilities.",
-    "tech": ["Python", "Docker", "Kubernetes", "AWS"],
-    "github": "https://github.com/example/deployment-toolkit",
-    "live": "https://deployment-toolkit.example.com",
-    "image": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7"
   }
 ]
