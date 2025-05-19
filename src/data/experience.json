@@ -1,0 +1,34 @@
+{
+  "experience": [
+    {
+      "title": "Sr. Full Stack Developer",
+      "company": "Credify Technology Pvt. Ltd.",
+      "duration": "2022 - Present",
+      "details": [
+        "Managed project development, including feature implementation, bug fixing, and codebase maintenance.",
+        "Collaborated with cross-functional teams to design and develop an investment product.",
+        "Interacted with vendors for requirements gathering and third-party service integration.",
+        "Designed and optimized database structures, ensuring scalability and data integrity.",
+        "Participate in key decision-making processes, sharing insights for product enhancements."
+      ]
+    },
+    {
+      "title": "Full Stack Developer",
+      "company": "Aarya Infoline",
+      "duration": "2020 - 2022",
+      "details": [
+        "Developed both frontend and backend for various projects, including a badminton tournament scoring system.",
+        "Utilized Google Cloud App Engine for managing code deployment and services."
+      ]
+    },
+    {
+      "title": "Full Stack Developer",
+      "company": "Denim Softwares",
+      "duration": "2018 - 2020",
+      "details": [
+        "Contributed to PHP, Bootstrap, WordPress core applications.",
+        "Managed server environments, debugging, and ensuring smooth deployments."
+      ]
+    }
+  ]
+}

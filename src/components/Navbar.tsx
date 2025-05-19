@@ -1,13 +1,9 @@
-
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Linkedin } from "lucide-react";
 
 const links = [
   { label: "Home", href: "/" },
-  { label: "About", href: "#about" },
   { label: "Projects", href: "/projects" },
-  { label: "Skills", href: "#skills" },
   { label: "Contact", href: "/contact" },
 ];
 

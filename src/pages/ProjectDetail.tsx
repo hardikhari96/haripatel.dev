@@ -15,12 +15,6 @@ type Project = {
   image?: string;
 };
 
-const placeholderImages: Record<string, string> = {
-  "investment-platform": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-  "badminton-tournament": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-  "deployment-automation-toolkit": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-};
-
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<Project | null>(null);
@@ -45,9 +39,6 @@ const ProjectDetail: React.FC = () => {
     );
   }
 
-  // Ensure we always have an image
-  const imageUrl = project.image || placeholderImages[project.id] || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b";
-
   return (
     <div className="font-inter min-h-screen bg-white">
       <Navbar />
@@ -58,13 +49,15 @@ const ProjectDetail: React.FC = () => {
           </Link>
         </div>
 
-        <div className="w-full mb-6 rounded-lg overflow-hidden shadow">
-          <img
-            src={imageUrl + "?auto=format&fit=crop&w=900&q=80"}
-            alt={project.name}
-            className="w-full h-64 object-cover border"
-          />
-        </div>
+        {project.image && (
+          <div className="w-full mb-6 rounded-lg overflow-hidden shadow">
+            <img
+              src={project.image + "?auto=format&fit=crop&w=900&q=80"}
+              alt={project.name}
+              className="w-full h-64 object-cover border"
+            />
+          </div>
+        )}
         <h1 className="text-3xl font-bold mb-3">{project.name}</h1>
         <div className="flex flex-wrap gap-2 mb-4">
           {project.tech.map(tech => (

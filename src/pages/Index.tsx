@@ -1,5 +1,3 @@
-
-import React from "react";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
 import SkillsSection from "@/components/SkillsSection";
@@ -84,15 +82,6 @@ const Index = () => {
                 LinkedIn
               </a>
             </span>
-            <span className="hidden md:inline mx-2">|</span>
-            <a
-              href="/cv-harikrushna-patel.pdf"
-              download
-              className="flex items-center gap-1 bg-primary text-white rounded px-2.5 py-1 hover:bg-primary/80 transition-colors text-sm ml-1"
-              title="Download CV"
-            >
-              <FileDown size={16} /> CV
-            </a>
           </div>
         </div>
       </section>
@@ -119,7 +108,7 @@ const Index = () => {
 
       {/* FOOTER */}
       <footer className="py-8 text-gray-400 text-center text-xs bg-white border-t">
-        © {new Date().getFullYear()} Harikrushna Patel. Portfolio built with Lovable.
+        © {new Date().getFullYear()} Harikrushna Patel.
       </footer>
     </div>
   );

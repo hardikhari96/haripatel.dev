@@ -4,26 +4,27 @@
     "id": "investment-platform",
     "name": "Investment Platform",
     "description": "Web app for investment product management with cross-functional workflow, vendor integration, and scalable architecture.",
-    "tech": ["Angular", "Node.js", "FastAPI", "GCP", "MongoDB"],
-    "github": "https://github.com/harikrushnapatel/investment-platform",
-    "live": "https://investment-demo.haripatel.dev",
+    "tech": ["Angular", "Node.js", "CentOs", "MariaDb"],
+    "github": "https://github.com/example/investment-platform",
+    "live": "https://investment-platform.example.com",
     "image": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
   },
   {
     "id": "badminton-tournament",
     "name": "Badminton Tournament System",
     "description": "Automated scoring and tournament management with custom backend, real-time stats, and secure user authentication.",
-    "tech": ["React", "Node.js", "FastAPI", "MySQL"],
-    "github": "https://github.com/harikrushnapatel/badminton-tournament",
-    "live": "https://badminton.haripatel.dev",
+    "tech": ["Angular", "Node.js", "Socket.io", "MySQL", "ubuntu"],
+    "github": "https://github.com/example/badminton-tournament",
+    "live": "https://badminton-tournament.example.com",
     "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085"
   },
   {
     "id": "deployment-automation-toolkit",
     "name": "Deployment Automation Toolkit",
-    "description": "Scripts and dashboards for automated CI/CD, deployment to cloud, monitoring, and error reporting.",
-    "tech": ["Python", "Docker", "Kubernetes", "GCP", "GitHub Actions"],
-    "github": "https://github.com/harikrushnapatel/deployment-toolkit",
+    "description": "Automated deployment solution for cloud infrastructure with CI/CD integration and monitoring capabilities.",
+    "tech": ["Python", "Docker", "Kubernetes", "AWS"],
+    "github": "https://github.com/example/deployment-toolkit",
+    "live": "https://deployment-toolkit.example.com",
     "image": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7"
   }
 ]

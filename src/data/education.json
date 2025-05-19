@@ -1,0 +1,26 @@
+{
+  "education": [
+    {
+      "degree": "Master of Computer Applications",
+      "institution": "BAOU University",
+      "year": "2024 - pursuing"
+    },
+    {
+      "degree": "Bachelor of Science in Physics",
+      "institution": "Sardar Patel University",
+      "year": "2017 - 2019"
+    },
+    {
+      "degree": "Computer Science & Applications",
+      "institution": "Information Technology Centre",
+      "year": "2020"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Neo4j Cypher Fundamentals",
+      "issuer": "neo4j | Graph Academy",
+      "year": "2023"
+    }
+  ]
+}
