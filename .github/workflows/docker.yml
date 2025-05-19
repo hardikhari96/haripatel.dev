@@ -25,11 +25,12 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/hardikhari96/kubectl/cv
+          ghcr.io/turiyadigitals/haripatel-dev-v2
         tags: |
           type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
+          type=sha,pattern=sha-{{sha}}
+          type=ref,event=branch
+          type=ref,event=pr
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
