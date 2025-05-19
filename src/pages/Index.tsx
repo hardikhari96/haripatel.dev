@@ -5,10 +5,8 @@ import AboutSection from "@/components/AboutSection";
 import { Mail, MapPin, Link as LinkIcon, Linkedin, FileDown } from "lucide-react";
 import projects from "@/data/projects.json";
 
-// Update project data to match the structure expected by ProjectCard
-const updatedProjects = projects.slice(0, 3);
-
 const Index = () => {
+  const displayProjects = projects.slice(0, 3);
   return (
     <div className="font-inter">
       <Navbar />
@@ -75,7 +73,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8 text-center">Projects</h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {updatedProjects.map((project) => (
+            {displayProjects.map((project) => (
               <ProjectCard key={project.name} {...project} />
             ))}
           </div>

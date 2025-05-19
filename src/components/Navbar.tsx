@@ -38,18 +38,21 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 left-0 w-full bg-white z-10 border-b border-gray-100 font-inter">
       <div className="container mx-auto flex justify-between items-center py-3">
-        <span className="text-lg font-bold tracking-tight flex items-center gap-2">
-          Harikrushna Patel
-          <a
-            href="https://www.linkedin.com/in/iharipatel/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-1 text-primary hover:text-primary/80"
-            title="LinkedIn"
-          >
-            <Linkedin size={20} />
-          </a>
-        </span>
+        <div className="flex items-center gap-4">
+          <span className="text-lg font-bold tracking-tight flex items-center gap-2">
+            Harikrushna Patel
+            <a
+              href="https://www.linkedin.com/in/iharipatel/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 text-primary hover:text-primary/80"
+              title="LinkedIn"
+            >
+              <Linkedin size={20} />
+            </a>
+          </span>
+          <span className="text-xs text-gray-400">K8s Pod IP: 10.20.214.131 | Node IP: 203.60.1.78</span>
+        </div>
         <ul className="flex gap-6">
           {links.map((link) => (
             <li key={link.label}>{renderLink(link)}</li>

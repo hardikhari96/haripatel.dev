@@ -5,6 +5,7 @@
     "name": "Trading Platform",
     "description": "Real-time trading platform with MCP integration, SSE-based updates, and Zerodha Kite API integration. Built with TypeScript, Node.js, and EJS templates.",
     "tech": ["TypeScript", "Node.js", "EJS", "Zerodha Kite API", "SSE", "MCP"],
+    "category": "Finance",
     "live": "https://trading.mcp-hub.site",
     "image": "https://images.unsplash.com/photo-1518791841217-8f162f1e1131"
   },
@@ -13,7 +14,7 @@
     "name": "Investment Platform",
     "description": "Web app for investment product management with cross-functional workflow, vendor integration, and scalable architecture.",
     "tech": ["Angular", "Node.js", "CentOs", "MariaDb"],
-    "github": "https://github.com/example/investment-platform",
+    "category": "Finance",
     "live": "https://investment-platform.example.com",
     "image": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
   },
@@ -22,7 +23,7 @@
     "name": "Badminton Tournament System",
     "description": "Automated scoring and tournament management with custom backend, real-time stats, and secure user authentication.",
     "tech": ["Angular", "Node.js", "Socket.io", "MySQL", "ubuntu"],
-    "github": "https://github.com/example/badminton-tournament",
+    "category": "Sports",
     "live": "https://badminton-tournament.example.com",
     "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085"
   }
