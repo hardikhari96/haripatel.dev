@@ -1,8 +1,9 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
+import { projects } from "@/data/data";
 
 type Project = {
   id: string;
@@ -16,14 +17,7 @@ type Project = {
 };
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-
-  useEffect(() => {
-    fetch("/src/data/projects.json")
-      .then((res) => res.json())
-      .then(setProjects);
-  }, []);
 
   const uniqueCategories = ['All', ...new Set(projects.map(project => project.category))];
 

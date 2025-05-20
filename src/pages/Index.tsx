@@ -3,7 +3,7 @@ import ProjectCard from "@/components/ProjectCard";
 import SkillsSection from "@/components/SkillsSection";
 import AboutSection from "@/components/AboutSection";
 import { Mail, MapPin, Link as LinkIcon, Linkedin, FileDown } from "lucide-react";
-import projects from "@/data/projects.json";
+import { projects } from "@/data/data";
 
 const Index = () => {
   const displayProjects = projects.slice(0, 3);
