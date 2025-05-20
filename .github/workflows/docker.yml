@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deploy to Kubernetes
 
 on:
   push:
@@ -7,16 +7,17 @@ on:
     branches: [ "main_v2" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    permissions:  # 👈 Add this to grant GITHUB_TOKEN rights for packages
+    permissions:
       contents: read
       packages: write
 
     steps:
     - uses: actions/checkout@v3
 
+    # Docker Build and Push
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -42,3 +43,18 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+    # Kubernetes Deployment
+    - name: Set up Kubectl
+      uses: azure/k8s-deploy@v1
+      with:
+        k8s-context: ${{ secrets.K8S_CONTEXT }}
+        namespace: default
+        manifests: |
+          deployment.yaml
+          service.yaml
+        image-pull-secrets: |
+          github-packages-secret
+        images: |
+          ghcr.io/hardikhari96/kubectl/haripatel-dev-v2:${{ github.sha }}
+        version: ${{ github.sha }}

@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haripatel-dev-v2
+  labels:
+    app: haripatel-dev-v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: haripatel-dev-v2
+  template:
+    metadata:
+      labels:
+        app: haripatel-dev-v2
+    spec:
+      containers:
+      - name: haripatel-dev-v2
+        image: ghcr.io/hardikhari96/kubectl/haripatel-dev-v2:${GITHUB_SHA}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+      imagePullSecrets:
+      - name: github-packages-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haripatel-dev-v2
+  labels:
+    app: haripatel-dev-v2
+spec:
+  selector:
+    app: haripatel-dev-v2
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
