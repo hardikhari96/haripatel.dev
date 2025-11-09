@@ -31,13 +31,11 @@ const series = Object.keys(blogsBySeries).sort();
 	</header>
 
 	<section class="section">
-		<h2>Writing</h2>
-
 		<!-- Series Filter -->
-		<div class="category-filter">
-			<button class="category-btn active" data-category="all">All Posts ({hashnodeBlogs.length})</button>
+		<div class="filter-buttons">
+			<button class="filter-btn active" data-category="all">All Posts ({hashnodeBlogs.length})</button>
 			{series.map((seriesName) => (
-				<button class="category-btn" data-category={seriesName}>
+				<button class="filter-btn" data-category={seriesName}>
 					{seriesName} ({blogsBySeries[seriesName].length})
 				</button>
 			))}
@@ -83,7 +81,7 @@ const series = Object.keys(blogsBySeries).sort();
 	</section>
 
 	<script>
-		const categoryButtons = document.querySelectorAll('.category-btn');
+		const categoryButtons = document.querySelectorAll('.filter-btn');
 		const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');
 
 		categoryButtons.forEach(button => {
@@ -137,34 +135,32 @@ const series = Object.keys(blogsBySeries).sort();
 		color: #0066cc;
 	}
 
-	.category-filter {
+	.filter-buttons {
 		display: flex;
+		gap: 1rem;
+		margin-bottom: 2rem;
 		flex-wrap: wrap;
-		gap: 0.75rem;
-		margin: 2rem 0;
-		padding-bottom: 2rem;
-		border-bottom: 1px solid #e5e7eb;
 	}
 
-	.category-btn {
-		background: #f3f4f6;
-		color: #374151;
-		border: 1px solid #d1d5db;
+	.filter-btn {
 		padding: 0.5rem 1rem;
-		border-radius: 6px;
+		background: #fff;
+		border: 1px solid #000;
+		color: #000;
 		cursor: pointer;
-		font-size: 0.875rem;
+		font-size: 0.95rem;
+		font-family: inherit;
 		transition: all 0.2s;
 	}
 
-	.category-btn:hover {
-		background: #e5e7eb;
+	.filter-btn:hover {
+		background: #000;
+		color: #fff;
 	}
 
-	.category-btn.active {
-		background: #2563eb;
-		color: white;
-		border-color: #2563eb;
+	.filter-btn.active {
+		background: #000;
+		color: #fff;
 	}
 
 	.series-badge {
@@ -282,12 +278,8 @@ const series = Object.keys(blogsBySeries).sort();
 			height: 150px;
 		}
 
-		.category-filter {
-			gap: 0.5rem;
-		}
-
-		.category-btn {
-			font-size: 0.8rem;
+		.filter-btn {
+			font-size: 0.85rem;
 			padding: 0.4rem 0.8rem;
 		}
 	}
