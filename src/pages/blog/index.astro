@@ -41,34 +41,29 @@ const series = Object.keys(blogsBySeries).sort();
 			))}
 		</div>
 
-		<div class="blog-grid">
+		<div class="blog-list">
 			{hashnodeBlogs.map((post) => (
-				<article class="blog-card" data-series={post.series?.name || 'Uncategorized'}>
-					{post.coverImage && (
-						<a href={post.url} target="_blank" rel="noopener noreferrer">
-							<img src={post.coverImage.url} alt={post.title} class="blog-cover" />
-						</a>
-					)}
-					<div class="blog-card-content">
-						{post.series && (
-							<span class="series-badge">{post.series.name}</span>
-						)}
+				<article class="blog-item" data-series={post.series?.name || 'Uncategorized'}>
+					<div class="blog-header">
 						<h3>
 							<a href={post.url} target="_blank" rel="noopener noreferrer">{post.title}</a>
 						</h3>
-						<p class="blog-meta">
-							{new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-							{post.readTimeInMinutes && <span> · {post.readTimeInMinutes} min read</span>}
-						</p>
-						<p class="blog-brief">{post.brief}</p>
-						{post.tags && post.tags.length > 0 && (
-							<div class="blog-tags">
-								{post.tags.map((tag) => (
-									<span class="tag">{tag.name}</span>
-								))}
-							</div>
+						{post.series && (
+							<span class="series-label">[{post.series.name}]</span>
 						)}
 					</div>
+					<p class="blog-meta">
+						{new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+						{post.readTimeInMinutes && <span> · {post.readTimeInMinutes} min read</span>}
+					</p>
+					<p class="blog-description">{post.brief}</p>
+					{post.tags && post.tags.length > 0 && (
+						<div class="blog-tags">
+							{post.tags.map((tag) => (
+								<span class="tag">#{tag.name}</span>
+							))}
+						</div>
+					)}
 				</article>
 			))}
 		</div>
@@ -82,7 +77,7 @@ const series = Object.keys(blogsBySeries).sort();
 
 	<script>
 		const categoryButtons = document.querySelectorAll('.filter-btn');
-		const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');
+		const blogItems = document.querySelectorAll<HTMLElement>('.blog-item');
 
 		categoryButtons.forEach(button => {
 			button.addEventListener('click', () => {
@@ -92,14 +87,14 @@ const series = Object.keys(blogsBySeries).sort();
 				categoryButtons.forEach(btn => btn.classList.remove('active'));
 				button.classList.add('active');
 
-				// Show/hide blog cards based on series
-				blogCards.forEach(card => {
-					const cardSeries = card.getAttribute('data-series') || 'Uncategorized';
+				// Show/hide blog items based on series
+				blogItems.forEach(item => {
+					const itemSeries = item.getAttribute('data-series') || 'Uncategorized';
 					
 					if (selectedCategory === 'all') {
-						card.style.display = 'flex';
+						item.style.display = 'block';
 					} else if (selectedCategory) {
-						card.style.display = cardSeries === selectedCategory ? 'flex' : 'none';
+						item.style.display = itemSeries === selectedCategory ? 'block' : 'none';
 					}
 				});
 			});
@@ -163,94 +158,70 @@ const series = Object.keys(blogsBySeries).sort();
 		color: #fff;
 	}
 
-	.series-badge {
-		display: inline-block;
-		background: #2563eb;
-		color: white;
-		padding: 0.25rem 0.75rem;
-		border-radius: 4px;
-		font-size: 0.75rem;
-		font-weight: 600;
-		margin-bottom: 0.75rem;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-	}
-
-	.blog-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 2rem;
+	.blog-list {
 		margin-top: 2rem;
 	}
 
-	.blog-card {
-		border: 1px solid #e5e7eb;
-		border-radius: 8px;
-		overflow: hidden;
-		transition: transform 0.2s, box-shadow 0.2s;
+	.blog-item {
+		margin-bottom: 2.5rem;
+		padding-bottom: 2.5rem;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.blog-item:last-child {
+		border-bottom: none;
+	}
+
+	.blog-header {
 		display: flex;
-		flex-direction: column;
+		align-items: baseline;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		margin-bottom: 0.5rem;
 	}
 
-	.blog-card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	.blog-item h3 {
+		margin: 0;
+		font-size: 1.2rem;
+		font-weight: 600;
 	}
 
-	.blog-cover {
-		width: 100%;
-		height: 200px;
-		object-fit: cover;
-		display: block;
-	}
-
-	.blog-card-content {
-		padding: 1.5rem;
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.blog-card h3 {
-		margin: 0 0 0.5rem 0;
-		font-size: 1.25rem;
-	}
-
-	.blog-card h3 a {
-		color: inherit;
+	.blog-item h3 a {
+		color: #000;
 		text-decoration: none;
 	}
 
-	.blog-card h3 a:hover {
-		color: #2563eb;
+	.blog-item h3 a:hover {
+		color: #0066cc;
+	}
+
+	.series-label {
+		font-size: 0.85rem;
+		color: #666;
+		font-weight: normal;
 	}
 
 	.blog-meta {
-		color: #6b7280;
-		font-size: 0.875rem;
-		margin: 0 0 1rem 0;
+		color: #666;
+		font-size: 0.9rem;
+		margin-bottom: 0.75rem;
 	}
 
-	.blog-brief {
-		color: #4b5563;
+	.blog-description {
+		color: #333;
 		line-height: 1.6;
-		margin: 0 0 1rem 0;
-		flex: 1;
+		margin-bottom: 0.75rem;
 	}
 
 	.blog-tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-top: auto;
+		gap: 0.75rem;
 	}
 
 	.tag {
-		background: #f3f4f6;
-		color: #374151;
-		padding: 0.25rem 0.75rem;
-		border-radius: 4px;
-		font-size: 0.875rem;
+		color: #666;
+		font-size: 0.85rem;
 	}
 
 	@media (max-width: 768px) {
@@ -262,20 +233,13 @@ const series = Object.keys(blogsBySeries).sort();
 			gap: 1rem;
 		}
 
-		.blog-grid {
-			grid-template-columns: 1fr;
+		.blog-item {
+			margin-bottom: 2rem;
+			padding-bottom: 2rem;
 		}
 
-		.blog-card-content {
-			padding: 1rem;
-		}
-
-		.blog-card h3 {
-			font-size: 1.125rem;
-		}
-
-		.blog-cover {
-			height: 150px;
+		.blog-item h3 {
+			font-size: 1.1rem;
 		}
 
 		.filter-btn {
