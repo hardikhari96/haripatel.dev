@@ -3,7 +3,7 @@ title: "Infrastructure as Code Pipeline"
 description: "Automated infrastructure provisioning and deployment using Terraform, Ansible, and CI/CD"
 year: 2024
 tags: ["Terraform", "Ansible", "CI/CD", "AWS", "DevOps"]
-category: "company"
+category: "personal"
 ---
 
 Enterprise-grade infrastructure automation pipeline that provisions and manages cloud resources across multiple environments using Infrastructure as Code principles.

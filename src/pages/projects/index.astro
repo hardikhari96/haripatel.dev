@@ -1,8 +1,8 @@
 ---
-import '../styles/global.css';
+import '../../styles/global.css';
 import { getCollection } from 'astro:content';
 
-const profile = await import('../data/profile.json');
+const profile = await import('../../data/profile.json');
 const allProjects = await getCollection('projects');
 
 // Sort by year (newest first)
@@ -13,6 +13,10 @@ const sortedProjects = allProjects.sort((a, b) =>
 // Group by category
 const personalProjects = sortedProjects.filter(p => p.data.category === 'personal');
 const companyProjects = sortedProjects.filter(p => p.data.category === 'company');
+
+console.log('All projects:', allProjects.length);
+console.log('Personal projects:', personalProjects.length);
+console.log('Company projects:', companyProjects.length);
 ---
 
 <!DOCTYPE html>
@@ -30,6 +34,30 @@ const companyProjects = sortedProjects.filter(p => p.data.category === 'company'
 		<a href="/">← Back to home</a>
 		<h1 style="margin-top: 2rem;">Projects</h1>
 	</header>
+
+	<!-- All Projects -->
+	<section class="section">
+		<h2>All Projects ({sortedProjects.length})</h2>
+		<ul>
+			{sortedProjects.map((project) => (
+				<li class="project-item">
+					<div class="project-title">
+						<a href={`/projects/${project.slug}`}>{project.data.title}</a>
+					</div>
+					<p class="project-description">{project.data.description}</p>
+					{project.data.tags && project.data.tags.length > 0 && (
+						<div style="margin-top: 0.5rem;">
+							{project.data.tags.map((tag: string) => (
+								<span style="display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; margin-right: 0.5rem; font-size: 0.85rem; border-radius: 3px;">
+									{tag}
+								</span>
+							))}
+						</div>
+					)}
+				</li>
+			))}
+		</ul>
+	</section>
 
 	{personalProjects.length > 0 && (
 		<section class="section">

@@ -1,13 +1,14 @@
 {
-  "name": "Hari Patel",
+  "name": "Harikrushna Patel",
   "title": "Software Developer / DevOps Engineer",
   "tagline": "Building scalable systems and infrastructure",
-  "email": "your@email.com",
+  "email": "mail@haripatel.dev",
   "github": "https://github.com/hardikhari96",
   "linkedin": "https://www.linkedin.com/in/iharipatel/",
-  "twitter": "https://twitter.com/yourusername",
+  "twitter": "https://twitter.com/hardikhari96",
   "website": "https://haripatel.dev",
   "blog": "https://blogs.haripatel.dev",
+  "showSkills": false,
   "about": [
     "Hi, I'm Hari Patel. I build scalable systems, optimize infrastructure, and solve complex technical problems.",
     "I specialize in DevOps, cloud infrastructure, backend development, and system architecture. I enjoy working with modern technologies and building tools that make developers' lives easier."

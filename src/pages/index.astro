@@ -34,13 +34,32 @@ const sortedProjects = allProjects.sort((a, b) =>
 	</header>
 
 	<!-- About Section -->
-	<section class="about section">
+	<section class="section">
 		<h2>About</h2>
-		<img src="/cropped_circle_image.png" alt={profile.name} class="profile-photo" />
-		{profile.about.map((paragraph) => (
-			<p>{paragraph}</p>
-		))}
+		<div class="about">
+			<div class="about-content">
+				{profile.about.map((paragraph) => (
+					<p>{paragraph}</p>
+				))}
+			</div>
+			<img src="/cropped_circle_image.png" alt={profile.name} class="profile-photo" />
+		</div>
 	</section>
+
+	<!-- Skills Section -->
+	{profile.showSkills && (
+		<section class="section">
+			<h2>Skills</h2>
+			<div class="skills-grid">
+				{Object.entries(profile.skills).map(([category, items]) => (
+					<div class="skill-category">
+						<h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+						<p>{items.join(', ')}</p>
+					</div>
+				))}
+			</div>
+		</section>
+	)}
 
 	<!-- Projects -->
 	<section class="section">
