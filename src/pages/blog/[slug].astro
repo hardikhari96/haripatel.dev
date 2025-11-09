@@ -1,0 +1,91 @@
+---
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="generator" content={Astro.generator} />
+	<meta name="description" content={entry.data.description || entry.data.title} />
+	<title>{entry.data.title} - Your Name</title>
+</head>
+<body>
+	<header>
+		<a href="/">← Back to home</a>
+	</header>
+
+	<article class="section">
+		<h1>{entry.data.title}</h1>
+		<p class="tagline">{entry.data.date}</p>
+		
+		<div class="blog-content">
+			<Content />
+		</div>
+	</article>
+</body>
+</html>
+
+<style>
+	.blog-content {
+		margin-top: 2rem;
+	}
+
+	.blog-content :global(h2) {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(h3) {
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.blog-content :global(p) {
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(pre) {
+		background: #f5f5f5;
+		padding: 1rem;
+		overflow-x: auto;
+		margin-bottom: 1rem;
+		border: 1px solid #e0e0e0;
+	}
+
+	.blog-content :global(code) {
+		font-family: 'Courier New', monospace;
+		font-size: 0.9rem;
+	}
+
+	.blog-content :global(ul),
+	.blog-content :global(ol) {
+		margin-left: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.blog-content :global(blockquote) {
+		border-left: 3px solid #0066cc;
+		padding-left: 1rem;
+		margin: 1.5rem 0;
+		color: #333;
+	}
+</style>

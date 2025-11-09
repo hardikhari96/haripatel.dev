@@ -1,0 +1,37 @@
+{
+  "name": "Hari Patel",
+  "title": "Software Developer / DevOps Engineer",
+  "tagline": "Building scalable systems and infrastructure",
+  "email": "your@email.com",
+  "github": "https://github.com/hardikhari96",
+  "linkedin": "https://www.linkedin.com/in/iharipatel/",
+  "twitter": "https://twitter.com/yourusername",
+  "website": "https://haripatel.dev",
+  "blog": "https://blogs.haripatel.dev",
+  "about": [
+    "Hi, I'm Hari Patel. I build scalable systems, optimize infrastructure, and solve complex technical problems.",
+    "I specialize in DevOps, cloud infrastructure, backend development, and system architecture. I enjoy working with modern technologies and building tools that make developers' lives easier."
+  ],
+  "skills": {
+    "languages": ["Python", "Go", "JavaScript", "TypeScript", "Bash"],
+    "devops": ["Docker", "Kubernetes", "NGINX", "CI/CD", "Terraform"],
+    "cloud": ["AWS", "GCP", "Azure"],
+    "backend": ["Node.js", "FastAPI", "Express", "RabbitMQ", "Redis"],
+    "databases": ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
+    "tools": ["Git", "Linux", "Ansible", "Jenkins"]
+  },
+  "experience": [
+    {
+      "company": "Current Company",
+      "position": "DevOps Engineer",
+      "period": "2023 - Present",
+      "description": "Building and maintaining cloud infrastructure, implementing CI/CD pipelines, and optimizing system performance."
+    },
+    {
+      "company": "Previous Company",
+      "position": "Backend Developer",
+      "period": "2021 - 2023",
+      "description": "Developed microservices, APIs, and backend systems. Worked with message queues and distributed systems."
+    }
+  ]
+}

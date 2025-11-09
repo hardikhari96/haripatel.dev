@@ -1,0 +1,119 @@
+---
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projectEntries = await getCollection('projects');
+  return projectEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="generator" content={Astro.generator} />
+	<meta name="description" content={entry.data.description || entry.data.title} />
+	<title>{entry.data.title} - Hari Patel</title>
+</head>
+<body>
+	<header>
+		<a href="/">← Back to home</a>
+	</header>
+
+	<article class="section">
+		<h1>{entry.data.title}</h1>
+		<p class="tagline">
+			{entry.data.year && `${entry.data.year} • `}
+			{entry.data.category && entry.data.category.charAt(0).toUpperCase() + entry.data.category.slice(1)}
+		</p>
+		
+		{entry.data.tags && entry.data.tags.length > 0 && (
+			<div style="margin-top: 1rem; margin-bottom: 2rem;">
+				{entry.data.tags.map((tag: string) => (
+					<span style="display: inline-block; background: #f0f0f0; padding: 0.25rem 0.75rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 3px; font-size: 0.9rem;">
+						{tag}
+					</span>
+				))}
+			</div>
+		)}
+
+		<div class="blog-content">
+			<Content />
+		</div>
+
+		{(entry.data.github || entry.data.link) && (
+			<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
+				{entry.data.github && (
+					<p><a href={entry.data.github} target="_blank" rel="noopener">View on GitHub →</a></p>
+				)}
+				{entry.data.link && (
+					<p><a href={entry.data.link} target="_blank" rel="noopener">Visit Project →</a></p>
+				)}
+			</div>
+		)}
+	</article>
+</body>
+</html>
+
+<style>
+	.blog-content {
+		margin-top: 2rem;
+	}
+
+	.blog-content :global(h2) {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(h3) {
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.blog-content :global(p) {
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(pre) {
+		background: #f5f5f5;
+		padding: 1rem;
+		overflow-x: auto;
+		margin-bottom: 1rem;
+		border: 1px solid #e0e0e0;
+	}
+
+	.blog-content :global(code) {
+		font-family: 'Courier New', monospace;
+		font-size: 0.9rem;
+	}
+
+	.blog-content :global(ul),
+	.blog-content :global(ol) {
+		margin-left: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.blog-content :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.blog-content :global(blockquote) {
+		border-left: 3px solid #0066cc;
+		padding-left: 1rem;
+		margin: 1.5rem 0;
+		color: #333;
+	}
+
+	.blog-content :global(strong) {
+		font-weight: 600;
+	}
+</style>

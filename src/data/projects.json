@@ -1,0 +1,38 @@
+{
+  "personal": [
+    {
+      "title": "Project Alpha",
+      "description": "A minimal task manager built with vanilla JavaScript. Focus on speed and simplicity.",
+      "link": "https://github.com/yourusername/project-alpha",
+      "year": "2024"
+    },
+    {
+      "title": "CLI Tool",
+      "description": "Command-line utility for automating repetitive development tasks.",
+      "link": "https://github.com/yourusername/cli-tool",
+      "year": "2023"
+    },
+    {
+      "title": "Static Site Generator",
+      "description": "Lightweight SSG written in Python for personal blogs.",
+      "link": "https://github.com/yourusername/ssg",
+      "year": "2023"
+    }
+  ],
+  "company": [
+    {
+      "title": "Enterprise Dashboard",
+      "description": "Real-time analytics dashboard serving 10k+ daily users. Built with React and TypeScript.",
+      "link": "https://company.com/product",
+      "company": "TechCorp",
+      "year": "2024"
+    },
+    {
+      "title": "API Gateway",
+      "description": "Microservices gateway handling 1M+ requests daily. Go + Redis.",
+      "link": null,
+      "company": "StartupXYZ",
+      "year": "2023"
+    }
+  ]
+}
