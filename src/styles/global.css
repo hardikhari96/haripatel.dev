@@ -20,6 +20,33 @@ body {
   padding: 40px 20px;
 }
 
+/* Header Navigation */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav a {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.nav a:hover,
+.nav a.active {
+  color: #0066cc;
+}
+
 /* Typography */
 h1 {
   font-size: 1.5rem;

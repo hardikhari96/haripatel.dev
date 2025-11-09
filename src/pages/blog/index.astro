@@ -19,12 +19,19 @@ const series = Object.keys(blogsBySeries).sort();
 </head>
 <body>
 	<header>
-		<a href="/">← Back to home</a>
+		<div class="header-content">
+			<h1>Harikrushna Patel</h1>
+			<nav class="nav">
+				<a href="/">Home</a>
+				<a href="/projects">Projects</a>
+				<a href="/blog" class="active">Blog</a>
+			</nav>
+		</div>
+		<p class="tagline">Articles and thoughts on software development</p>
 	</header>
 
 	<section class="section">
-		<h1>Writing</h1>
-		<p class="tagline">Articles and thoughts on software development</p>
+		<h2>Writing</h2>
 
 		<!-- Series Filter -->
 		<div class="category-filter">
@@ -104,6 +111,32 @@ const series = Object.keys(blogsBySeries).sort();
 </html>
 
 <style>
+	.header-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.nav {
+		display: flex;
+		gap: 1.5rem;
+	}
+
+	.nav a {
+		color: #666;
+		text-decoration: none;
+		font-size: 0.95rem;
+		transition: color 0.2s;
+	}
+
+	.nav a:hover,
+	.nav a.active {
+		color: #0066cc;
+	}
+
 	.category-filter {
 		display: flex;
 		flex-wrap: wrap;
@@ -225,6 +258,14 @@ const series = Object.keys(blogsBySeries).sort();
 	}
 
 	@media (max-width: 768px) {
+		.header-content {
+			gap: 0.5rem;
+		}
+
+		.nav {
+			gap: 1rem;
+		}
+
 		.blog-grid {
 			grid-template-columns: 1fr;
 		}

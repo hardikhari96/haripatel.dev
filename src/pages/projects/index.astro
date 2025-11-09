@@ -29,6 +29,32 @@ console.log('Company projects:', companyProjects.length);
 	<meta name="description" content={`Projects by ${profile.name}`} />
 	<title>Projects - {profile.name}</title>
 	<style>
+		.header-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 0.5rem;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		.nav {
+			display: flex;
+			gap: 1.5rem;
+		}
+
+		.nav a {
+			color: #666;
+			text-decoration: none;
+			font-size: 0.95rem;
+			transition: color 0.2s;
+		}
+
+		.nav a:hover,
+		.nav a.active {
+			color: #0066cc;
+		}
+
 		.filter-buttons {
 			display: flex;
 			gap: 1rem;
@@ -53,12 +79,29 @@ console.log('Company projects:', companyProjects.length);
 			background: #000;
 			color: #fff;
 		}
+
+		@media (max-width: 768px) {
+			.header-content {
+				gap: 0.5rem;
+			}
+
+			.nav {
+				gap: 1rem;
+			}
+		}
 	</style>
 </head>
 <body>
 	<header>
-		<a href="/">← Back to home</a>
-		<h1 style="margin-top: 2rem;">Projects</h1>
+		<div class="header-content">
+			<h1>Harikrushna Patel</h1>
+			<nav class="nav">
+				<a href="/">Home</a>
+				<a href="/projects" class="active">Projects</a>
+				<a href="/blog">Blog</a>
+			</nav>
+		</div>
+		<p class="tagline">Personal and professional work</p>
 	</header>
 
 	<!-- Filter Buttons -->
@@ -95,8 +138,8 @@ console.log('Company projects:', companyProjects.length);
 
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
-			const filterButtons = document.querySelectorAll('.filter-btn');
-			const projectItems = document.querySelectorAll('.project-item');
+			const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+			const projectItems = document.querySelectorAll<HTMLElement>('.project-item');
 
 			filterButtons.forEach(button => {
 				button.addEventListener('click', () => {
