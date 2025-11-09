@@ -4,7 +4,6 @@ description: "Self-hosted geo-fencing solution using NGINX and GeoIP2 for locati
 year: 2025
 tags: ["NGINX", "DevOps", "Linux", "Security"]
 category: "personal"
-github: "https://github.com/hardikhari96/nginx-geofencing"
 ---
 
 A self-hosted geo-fencing implementation using NGINX reverse proxy and GeoIP2 database. This project eliminates the need for third-party services like Cloudflare while maintaining full control over traffic routing.

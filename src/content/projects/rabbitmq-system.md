@@ -3,7 +3,7 @@ title: "RabbitMQ Message Queue System"
 description: "Distributed message queue implementation for asynchronous task processing and microservices communication"
 year: 2025
 tags: ["RabbitMQ", "Python", "Node.js", "Microservices", "Backend", "Docker"]
-category: "company"
+category: "personal"
 ---
 
 Production-grade RabbitMQ system handling distributed services for email, notifications, and WhatsApp messaging at company scale.
