@@ -1,7 +1,7 @@
 {
   "name": "Harikrushna Patel",
   "title": "Harikrushna Patel - Personal Homepage - Developer,Absurdist",
-  "tagline": "Software Developer / Absurdist / Advaitists",
+  "tagline": "Software Developer / Physicist / Absurdist / Advaitists",
   "email": "mail@haripatel.dev",
   "github": "https://github.com/hardikhari96",
   "linkedin": "https://www.linkedin.com/in/iharipatel/",
@@ -11,7 +11,7 @@
   "showSkills": false,
   "about": [
     "I am a hobbyist software developer.",
-    "I specialize in DevOps, cloud infrastructure, backend development, and system architecture. I enjoy working with modern technologies and building tools that make developers lives easier."
+    "I specialize in DevOps, cloud infrastructure, backend development, and system architecture. I enjoy working with modern technologies."
   ],
   "skills": {
     "languages": ["Python", "Go", "JavaScript", "TypeScript", "Bash"],
