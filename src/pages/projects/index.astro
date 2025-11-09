@@ -14,9 +14,13 @@ const sortedProjects = allProjects.sort((a, b) =>
 const personalProjects = sortedProjects.filter(p => p.data.category === 'personal');
 const companyProjects = sortedProjects.filter(p => p.data.category === 'company');
 
+// Get unique company names
+const companies = [...new Set(companyProjects.map(p => p.data.company).filter(Boolean))];
+
 console.log('All projects:', allProjects.length);
 console.log('Personal projects:', personalProjects.length);
 console.log('Company projects:', companyProjects.length);
+console.log('Companies:', companies);
 ---
 
 <!DOCTYPE html>
@@ -79,6 +83,43 @@ console.log('Company projects:', companyProjects.length);
 			background: #000;
 			color: #fff;
 		}
+		#company-filters {
+			padding-left: 0;
+			border-left: 3px solid #e0e0e0;
+			padding-left: 1.5rem;
+		}
+		.company-filter-btn {
+			padding: 0.4rem 0.9rem;
+			background: #f8f8f8;
+			border: 1px solid #ddd;
+			color: #444;
+			cursor: pointer;
+			font-size: 0.9rem;
+			font-family: inherit;
+			transition: all 0.2s;
+			border-radius: 4px;
+		}
+		.company-filter-btn:hover {
+			background: #e8e8e8;
+			border-color: #999;
+			color: #000;
+		}
+		.company-filter-btn.active {
+			background: #000;
+			color: #fff;
+			border-color: #000;
+		}
+
+		.company-badge {
+			display: inline-block;
+			margin-left: 0.75rem;
+			padding: 0.15rem 0.6rem;
+			background: #f0f0f0;
+			color: #555;
+			font-size: 0.85rem;
+			font-weight: normal;
+			border-radius: 3px;
+		}
 
 		@media (max-width: 768px) {
 			.header-content {
@@ -111,15 +152,27 @@ console.log('Company projects:', companyProjects.length);
 			<button class="filter-btn" data-filter="personal">Personal ({personalProjects.length})</button>
 			<button class="filter-btn" data-filter="company">Company ({companyProjects.length})</button>
 		</div>
+		<!-- Company Sub-filters -->
+		<div id="company-filters" class="filter-buttons" style="display: none; margin-top: 1rem; padding-left: 1rem;">
+			<button class="company-filter-btn active" data-company="all">All Companies</button>
+			{companies.map((company) => (
+				<button class="company-filter-btn" data-company={company}>
+					{company} ({companyProjects.filter(p => p.data.company === company).length})
+				</button>
+			))}
+		</div>
 	</section>
 
 	<!-- All Projects -->
 	<section class="section">
 		<ul id="projects-list">
 			{sortedProjects.map((project) => (
-				<li class="project-item" data-category={project.data.category || 'none'}>
+				<li class="project-item" data-category={project.data.category || 'none'} data-company={project.data.company || ''}>
 					<div class="project-title">
 						<a href={`/projects/${project.slug}`}>{project.data.title}</a>
+						{project.data.company && (
+							<span class="company-badge">@ {project.data.company}</span>
+						)}
 					</div>
 					<p class="project-description">{project.data.description}</p>
 					{project.data.tags && project.data.tags.length > 0 && (
@@ -139,27 +192,74 @@ console.log('Company projects:', companyProjects.length);
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
 			const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+			const companyFilterButtons = document.querySelectorAll<HTMLButtonElement>('.company-filter-btn');
 			const projectItems = document.querySelectorAll<HTMLElement>('.project-item');
+			const companyFilters = document.getElementById('company-filters');
 
+			let currentCategory = 'all';
+			let currentCompany = 'all';
+
+			// Category filter
 			filterButtons.forEach(button => {
 				button.addEventListener('click', () => {
 					const filter = button.dataset.filter;
+					currentCategory = filter || 'all';
 
 					// Update active button
 					filterButtons.forEach(btn => btn.classList.remove('active'));
 					button.classList.add('active');
 
-					// Filter projects
-					projectItems.forEach(item => {
-						const category = item.dataset.category;
-						if (filter === 'all' || category === filter) {
-							item.style.display = 'block';
-						} else {
-							item.style.display = 'none';
-						}
-					});
+					// Show/hide company filters
+					if (filter === 'company' && companyFilters) {
+						companyFilters.style.display = 'flex';
+					} else if (companyFilters) {
+						companyFilters.style.display = 'none';
+						currentCompany = 'all';
+						// Reset company filter buttons
+						companyFilterButtons.forEach(btn => btn.classList.remove('active'));
+						companyFilterButtons[0]?.classList.add('active');
+					}
+
+					filterProjects();
 				});
 			});
+
+			// Company filter
+			companyFilterButtons.forEach(button => {
+				button.addEventListener('click', () => {
+					const company = button.dataset.company;
+					currentCompany = company || 'all';
+
+					// Update active button
+					companyFilterButtons.forEach(btn => btn.classList.remove('active'));
+					button.classList.add('active');
+
+					filterProjects();
+				});
+			});
+
+			function filterProjects() {
+				projectItems.forEach(item => {
+					const category = item.dataset.category;
+					const company = item.dataset.company;
+
+					let showItem = false;
+
+					// Check category filter
+					if (currentCategory === 'all' || category === currentCategory) {
+						// If company category is selected, also check company filter
+						if (currentCategory === 'company') {
+							if (currentCompany === 'all' || company === currentCompany) {
+								showItem = true;
+							}
+						} else {
+							showItem = true;
+						}
+					}
+
+					item.style.display = showItem ? 'block' : 'none';
+				});
+			}
 		});
 	</script>
 </body>
