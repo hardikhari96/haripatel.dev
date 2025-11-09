@@ -28,6 +28,32 @@ console.log('Company projects:', companyProjects.length);
 	<meta name="generator" content={Astro.generator} />
 	<meta name="description" content={`Projects by ${profile.name}`} />
 	<title>Projects - {profile.name}</title>
+	<style>
+		.filter-buttons {
+			display: flex;
+			gap: 1rem;
+			margin-bottom: 2rem;
+			flex-wrap: wrap;
+		}
+		.filter-btn {
+			padding: 0.5rem 1rem;
+			background: #fff;
+			border: 1px solid #000;
+			color: #000;
+			cursor: pointer;
+			font-size: 0.95rem;
+			font-family: inherit;
+			transition: all 0.2s;
+		}
+		.filter-btn:hover {
+			background: #000;
+			color: #fff;
+		}
+		.filter-btn.active {
+			background: #000;
+			color: #fff;
+		}
+	</style>
 </head>
 <body>
 	<header>
@@ -35,12 +61,20 @@ console.log('Company projects:', companyProjects.length);
 		<h1 style="margin-top: 2rem;">Projects</h1>
 	</header>
 
+	<!-- Filter Buttons -->
+	<section class="section">
+		<div class="filter-buttons">
+			<button class="filter-btn active" data-filter="all">All ({sortedProjects.length})</button>
+			<button class="filter-btn" data-filter="personal">Personal ({personalProjects.length})</button>
+			<button class="filter-btn" data-filter="company">Company ({companyProjects.length})</button>
+		</div>
+	</section>
+
 	<!-- All Projects -->
 	<section class="section">
-		<h2>All Projects ({sortedProjects.length})</h2>
-		<ul>
+		<ul id="projects-list">
 			{sortedProjects.map((project) => (
-				<li class="project-item">
+				<li class="project-item" data-category={project.data.category || 'none'}>
 					<div class="project-title">
 						<a href={`/projects/${project.slug}`}>{project.data.title}</a>
 					</div>
@@ -59,54 +93,31 @@ console.log('Company projects:', companyProjects.length);
 		</ul>
 	</section>
 
-	{personalProjects.length > 0 && (
-		<section class="section">
-			<h2>Personal Projects</h2>
-			<ul>
-				{personalProjects.map((project) => (
-					<li class="project-item">
-						<div class="project-title">
-							<a href={`/projects/${project.slug}`}>{project.data.title}</a>
-						</div>
-						<p class="project-description">{project.data.description}</p>
-						{project.data.tags && project.data.tags.length > 0 && (
-							<div style="margin-top: 0.5rem;">
-								{project.data.tags.map((tag: string) => (
-									<span style="display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; margin-right: 0.5rem; font-size: 0.85rem; border-radius: 3px;">
-										{tag}
-									</span>
-								))}
-							</div>
-						)}
-					</li>
-				))}
-			</ul>
-		</section>
-	)}
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const filterButtons = document.querySelectorAll('.filter-btn');
+			const projectItems = document.querySelectorAll('.project-item');
 
-	{companyProjects.length > 0 && (
-		<section class="section">
-			<h2>Company / Professional Projects</h2>
-			<ul>
-				{companyProjects.map((project) => (
-					<li class="project-item">
-						<div class="project-title">
-							<a href={`/projects/${project.slug}`}>{project.data.title}</a>
-						</div>
-						<p class="project-description">{project.data.description}</p>
-						{project.data.tags && project.data.tags.length > 0 && (
-							<div style="margin-top: 0.5rem;">
-								{project.data.tags.map((tag: string) => (
-									<span style="display: inline-block; background: #f0f0f0; padding: 0.2rem 0.6rem; margin-right: 0.5rem; font-size: 0.85rem; border-radius: 3px;">
-										{tag}
-									</span>
-								))}
-							</div>
-						)}
-					</li>
-				))}
-			</ul>
-		</section>
-	)}
+			filterButtons.forEach(button => {
+				button.addEventListener('click', () => {
+					const filter = button.dataset.filter;
+
+					// Update active button
+					filterButtons.forEach(btn => btn.classList.remove('active'));
+					button.classList.add('active');
+
+					// Filter projects
+					projectItems.forEach(item => {
+						const category = item.dataset.category;
+						if (filter === 'all' || category === filter) {
+							item.style.display = 'block';
+						} else {
+							item.style.display = 'none';
+						}
+					});
+				});
+			});
+		});
+	</script>
 </body>
 </html>

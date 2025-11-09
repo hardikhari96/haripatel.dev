@@ -3,7 +3,6 @@ import '../styles/global.css';
 import { getCollection } from 'astro:content';
 
 const profile = await import('../data/profile.json');
-const projectsData = await import('../data/projects.json');
 const blogPosts = await getCollection('blog');
 const sortedPosts = blogPosts.sort((a, b) => 
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
@@ -65,7 +64,7 @@ const sortedProjects = allProjects.sort((a, b) =>
 	<section class="section">
 		<h2>Projects</h2>
 		<ul>
-			{sortedProjects.slice(0, 6).map((project) => (
+			{sortedProjects.slice(0, 3).map((project) => (
 				<li class="project-item">
 					<div class="project-title">
 						<a href={`/projects/${project.slug}`}>{project.data.title}</a>
