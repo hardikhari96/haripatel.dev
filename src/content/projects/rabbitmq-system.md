@@ -6,77 +6,56 @@ tags: ["RabbitMQ", "Python", "Node.js", "Microservices", "Backend", "Docker"]
 category: "company"
 ---
 
-Production-grade RabbitMQ message queue system deployed at company scale for handling distributed services including email, notifications, and WhatsApp messaging across multiple clients.
+Production-grade RabbitMQ system handling distributed services for email, notifications, and WhatsApp messaging at company scale.
 
-## Project Overview
+## Overview
 
-Implemented and deployed a distributed message queue infrastructure using RabbitMQ to handle asynchronous communication between multiple services in a microservices architecture. Built with both Node.js and Python implementations.
+Distributed message queue infrastructure built with Node.js and Python for asynchronous microservices communication.
 
-## Implementation
+## Service Architecture
 
-### Service Distribution
+### Core Services
 - **Email Service**: Dedicated queue for email processing and delivery
-- **Notification Service**: Real-time notification handling and routing
-- **Messaging Service**: Inter-service communication and data exchange
-- **WhatsApp Messaging Service**: Automated WhatsApp message delivery system
+- **Notification Service**: Real-time notification handling
+- **WhatsApp Messaging**: Automated message delivery via dual-consumer pattern
 
-### WhatsApp Messaging Architecture
-- **API Layer**: REST API receives messages and pushes to number queue
-- **Python Consumer (Windows)**: Selenium-based consumer processes messages from queue
-  - Consumes messages from number queue
-  - Sends WhatsApp messages via Selenium automation
+### WhatsApp Implementation
+- **API Layer**: REST API pushes messages to number queue
+- **Python Consumer (Windows)**: Selenium-based automation
+  - Consumes from number queue and sends via WhatsApp Web
   - Publishes delivery status to log queue
-- **Android App Consumer**: Alternative messaging channel
-  - Consumes messages from same queue
-  - Sends messages through Android interface
-  - Publishes status events to log queue
-- **Log Queue**: Centralized logging for message delivery tracking and database events
-
-### Queue Architecture
-- Multiple queues for service isolation and scalability
-- Distributed clients consuming from respective queues
-- Dual-consumer pattern (Python + Android) for WhatsApp service
-- Asynchronous task processing for improved performance
-- Event-driven logging via dedicated log queue
-
-### Technology Stack
-- **Node.js**: Primary API and service implementation
-- **Python**: Windows consumer with Selenium for WhatsApp automation
-- **Android App**: Mobile consumer for message delivery
-- **Selenium**: Browser automation for WhatsApp Web integration
-
-### Deployment
-- Dockerized RabbitMQ setup for easy deployment and scaling
-- Containerized services for consistent environments
-- Windows-based Python consumer for Selenium automation
-- Production deployment in company infrastructure
+- **Android App Consumer**: Mobile-based message delivery
+  - Consumes from same queue as failover/load distribution
+  - Sends status events to log queue
+- **Log Queue**: Centralized tracking for all delivery events and database operations
 
 ## Key Features
 
-- Multiple exchange types (direct, topic, fanout)
+- Multiple exchange types (direct, topic, fanout) for flexible routing
 - Dead letter queues for failed message handling
-- Message persistence and durability
-- Consumer acknowledgments for reliability
-- Priority queues for critical tasks
-- Multi-consumer architecture with failover support
+- Dual-consumer architecture for high availability
+- Event-driven logging with dedicated log queue
+- Message persistence and consumer acknowledgments
+
+## Deployment
+
+- Dockerized RabbitMQ and Node.js services
+- Windows-based Python consumer for Selenium automation
+- Production deployment in company infrastructure
 
 ## Achievements
 
-- Successfully distributed workload across multiple services
-- Decoupled email, notification, and messaging systems
-- Implemented reliable WhatsApp messaging with dual consumers
-- Built event-driven logging system with dedicated log queue
-- Improved system reliability with asynchronous processing
+- Decoupled services with asynchronous processing
+- Reliable WhatsApp messaging with dual consumers
+- Centralized event logging for monitoring and debugging
 - Scalable architecture supporting multiple client instances
 
 ## Technologies
 
 - RabbitMQ
-- Node.js
-- Python (pika library, Selenium)
+- Node.js & Python (pika, Selenium)
 - Docker
 - Android App
 - Selenium WebDriver
-- Microservices Architecture
 
 [Read the full blog post](/blog/rabbitmq-simplified-understanding-messaging-queues)
