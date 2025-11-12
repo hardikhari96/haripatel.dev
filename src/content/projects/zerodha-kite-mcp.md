@@ -2,8 +2,9 @@
 title: "Zerodha Kite MCP Integration"
 description: "Developer-focused project bridging Zerodha Kite with LLM-native tools using Model Context Protocol (MCP)"
 year: 2025
-tags: ["Next.js", "TypeScript", "Node.js", "MCP", "Zerodha Kite", "Trading API", "SSE", "LLM Integration"]
+tags: ["AI", "Next.js", "TypeScript", "Node.js", "MCP", "Zerodha Kite", "Trading API", "SSE", "LLM Integration"]
 category: "personal"
+subcategory: "ai"
 ---
 
 Developer-focused project that bridges Zerodha Kite trading platform with LLM-native tools using Model Context Protocol (MCP), enabling natural language interactions with trading accounts.
@@ -56,3 +57,7 @@ Through natural language, developers can:
 - Server-Sent Events (SSE)
 - OAuth 2.0
 - LLM Integration (Copilot, Cursor, Claude)
+
+## Demo
+
+<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:share:7324146174343426048" height="1117" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>

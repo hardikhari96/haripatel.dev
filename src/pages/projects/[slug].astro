@@ -39,7 +39,7 @@ const { Content } = await entry.render();
 		{entry.data.tags && entry.data.tags.length > 0 && (
 			<div style="margin-top: 1rem; margin-bottom: 2rem;">
 				{entry.data.tags.map((tag: string) => (
-					<span style="display: inline-block; background: #f0f0f0; padding: 0.25rem 0.75rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 3px; font-size: 0.9rem;">
+					<span style="display: inline-block; background: #f0f0f0; padding: 0.1rem 0.5rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 3px; font-size: 0.9rem;">
 						{tag}
 					</span>
 				))}

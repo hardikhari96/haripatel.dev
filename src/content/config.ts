@@ -19,6 +19,7 @@ const projects = defineCollection({
     link: z.string().optional(),
     github: z.string().optional(),
     category: z.enum(['personal', 'company']).optional(),
+    subcategory: z.enum(['ai', 'backend', 'frontend', 'infrastructure', 'other']).optional(),
     company: z.string().optional(),
   }),
 });
