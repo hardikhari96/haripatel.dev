@@ -11,7 +11,7 @@
   "showSkills": false,
   "about": [
     "I am a hobbyist software developer.",
-    "I specialize in DevOps, cloud infrastructure, backend development, and system architecture. I enjoy working with modern technologies. "
+    "I specialize in backend development and system architecture, and I also work with DevOps practices to streamline development and deployment workflows. I enjoy building scalable systems and working with modern technologies to create reliable, high-performance applications."
   ],
   "skills": {
     "languages": ["Python", "Go", "JavaScript", "TypeScript", "Bash"],
