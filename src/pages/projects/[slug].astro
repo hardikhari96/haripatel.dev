@@ -1,7 +1,7 @@
 ---
 import '../../styles/global.css';
 import { getCollection } from 'astro:content';
-import SnowEffect from '../../components/SnowEffect.astro';
+import RainEffect from '../../components/RainEffect.astro';
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection('projects');
@@ -27,7 +27,7 @@ const { Content } = await entry.render();
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
 </head>
 <body>
-	<SnowEffect />
+	<RainEffect />
 	<header>
 		<a href="/">← Back to home</a>
 	</header>

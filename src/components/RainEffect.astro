@@ -1,0 +1,92 @@
+---
+// Christmas Rain Effect Component
+---
+
+<div id="rain-container"></div>
+
+<style>
+  #rain-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .raindrop {
+    position: absolute;
+    top: -10px;
+    color: #4a90e2;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    opacity: 0.8;
+    animation: fall linear infinite;
+    user-select: none;
+  }
+
+  @keyframes fall {
+    0% {
+      transform: translateY(0vh);
+    }
+    100% {
+      transform: translateY(100vh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .raindrop {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Raindrop generation
+  function createRaindrop() {
+    const raindrop = document.createElement('div');
+    raindrop.classList.add('raindrop');
+    raindrop.innerHTML = '💧';
+    
+    // Random horizontal position
+    raindrop.style.left = Math.random() * 100 + '%';
+    
+    // Random animation duration (1-3 seconds - rain falls faster than snow)
+    const duration = Math.random() * 2 + 1;
+    raindrop.style.animationDuration = duration + 's';
+    
+    // Random delay
+    raindrop.style.animationDelay = Math.random() * 2 + 's';
+    
+    // Random size
+    const size = Math.random() * 0.5 + 0.5;
+    raindrop.style.fontSize = size + 'em';
+    
+    // Random opacity
+    raindrop.style.opacity = (Math.random() * 0.6 + 0.4).toString();
+    
+    return raindrop;
+  }
+
+  function initRainEffect() {
+    const container = document.getElementById('rain-container');
+    if (!container) return;
+    
+    // Create 30 raindrops
+    const raindropCount = 30;
+    for (let i = 0; i < raindropCount; i++) {
+      container.appendChild(createRaindrop());
+    }
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRainEffect);
+  } else {
+    initRainEffect();
+  }
+</script>
