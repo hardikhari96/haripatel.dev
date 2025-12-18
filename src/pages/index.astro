@@ -3,8 +3,12 @@ import '../styles/global.css';
 import { getCollection } from 'astro:content';
 import { getHashnodeBlogs } from '../lib/hashnode';
 import SnowEffect from '../components/SnowEffect.astro';
+import FestiveDecoration from '../components/FestiveDecoration.astro';
 
 const profile = await import('../data/profile.json');
+const festivalConfig = await import('../data/festival.json');
+const currentFestival = festivalConfig.currentFestival || 'none';
+const enableSnow = festivalConfig.festivals[currentFestival]?.enableSnow || false;
 
 // Fetch blogs from Hashnode
 const hashnodeBlogs = await getHashnodeBlogs(5);
@@ -28,11 +32,11 @@ const sortedProjects = allProjects.sort((a, b) =>
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
 </head>
 <body>
-	<SnowEffect />
+	{enableSnow && <SnowEffect />}
 	<!-- Header -->
 	<header>
 		<div class="header-content">
-			<h1>{profile.name}</h1>
+			<h1>{profile.name}<FestiveDecoration festival={currentFestival} /></h1>
 			<nav class="nav">
 				<a href="/" class="active">Home</a>
 				<a href="/projects">Projects</a>

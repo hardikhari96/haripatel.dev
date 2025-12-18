@@ -1,0 +1,40 @@
+{
+  "currentFestival": "christmas",
+  "festivals": {
+    "christmas": {
+      "name": "Christmas",
+      "emoji": "🎄",
+      "startDate": "12-01",
+      "endDate": "12-31",
+      "enableSnow": true
+    },
+    "newyear": {
+      "name": "New Year",
+      "emoji": "🎊",
+      "startDate": "01-01",
+      "endDate": "01-07",
+      "enableSnow": true
+    },
+    "diwali": {
+      "name": "Diwali",
+      "emoji": "🪔",
+      "startDate": "10-15",
+      "endDate": "11-15",
+      "enableSnow": false
+    },
+    "halloween": {
+      "name": "Halloween",
+      "emoji": "🎃",
+      "startDate": "10-25",
+      "endDate": "10-31",
+      "enableSnow": false
+    },
+    "none": {
+      "name": "None",
+      "emoji": "",
+      "startDate": null,
+      "endDate": null,
+      "enableSnow": false
+    }
+  }
+}

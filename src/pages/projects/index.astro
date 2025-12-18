@@ -2,8 +2,12 @@
 import '../../styles/global.css';
 import { getCollection } from 'astro:content';
 import SnowEffect from '../../components/SnowEffect.astro';
+import FestiveDecoration from '../../components/FestiveDecoration.astro';
 
 const profile = await import('../../data/profile.json');
+const festivalConfig = await import('../../data/festival.json');
+const currentFestival = festivalConfig.currentFestival || 'none';
+const enableSnow = festivalConfig.festivals[currentFestival]?.enableSnow || false;
 const allProjects = await getCollection('projects');
 
 // Sort by year (newest first)
@@ -135,10 +139,10 @@ console.log('Companies:', companies);
 	</style>
 </head>
 <body>
-	<SnowEffect />
+	{enableSnow && <SnowEffect />}
 	<header>
 		<div class="header-content">
-			<h1>Harikrushna Patel</h1>
+			<h1>Harikrushna Patel<FestiveDecoration festival={currentFestival} /></h1>
 			<nav class="nav">
 				<a href="/">Home</a>
 				<a href="/projects" class="active">Projects</a>
