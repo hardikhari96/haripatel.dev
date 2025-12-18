@@ -78,10 +78,7 @@ export function getCurrentTheme() {
   return {
     festival,
     season,
-    enableSnowFestival: themeConfig.festivals[festival as FestivalKey]?.enableSnow || false,
-    enableSnowSeason: themeConfig.seasons[season as SeasonKey]?.enableSnow || false,
-    enableSnow: (themeConfig.festivals[festival as FestivalKey]?.enableSnow || false) || 
-                (themeConfig.seasons[season as SeasonKey]?.enableSnow || false),
+    enableSnow: themeConfig.seasons[season as SeasonKey]?.enableSnow || false,
     enableRain: season === 'monsoon',
     enableLeaves: ['spring', 'autumn'].includes(season)
   };
