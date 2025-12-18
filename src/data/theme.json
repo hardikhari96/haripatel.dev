@@ -1,0 +1,170 @@
+{
+  "currentFestival": "auto",
+  "currentSeason": "auto",
+  "festivals": {
+    "christmas": {
+      "name": "Christmas",
+      "emoji": "🎄",
+      "startDate": "12-01",
+      "endDate": "12-31",
+      "enableSnow": true
+    },
+    "newyear": {
+      "name": "New Year",
+      "emoji": "🎊",
+      "startDate": "01-01",
+      "endDate": "01-07",
+      "enableSnow": true
+    },
+    "valentines": {
+      "name": "Valentine's Day",
+      "emoji": "💝",
+      "startDate": "02-10",
+      "endDate": "02-14",
+      "enableSnow": false
+    },
+    "holi": {
+      "name": "Holi",
+      "emoji": "🎨",
+      "startDate": "03-01",
+      "endDate": "03-15",
+      "enableSnow": false
+    },
+    "easter": {
+      "name": "Easter",
+      "emoji": "🐰",
+      "startDate": "03-20",
+      "endDate": "04-20",
+      "enableSnow": false
+    },
+    "eid": {
+      "name": "Eid",
+      "emoji": "🌙",
+      "startDate": "04-01",
+      "endDate": "04-15",
+      "enableSnow": false
+    },
+    "independenceday": {
+      "name": "Independence Day (India)",
+      "emoji": "🇮🇳",
+      "startDate": "08-10",
+      "endDate": "08-15",
+      "enableSnow": false
+    },
+    "ganeshchaturthi": {
+      "name": "Ganesh Chaturthi",
+      "emoji": "🐘",
+      "startDate": "08-20",
+      "endDate": "09-10",
+      "enableSnow": false
+    },
+    "halloween": {
+      "name": "Halloween",
+      "emoji": "🎃",
+      "startDate": "10-25",
+      "endDate": "10-31",
+      "enableSnow": false
+    },
+    "diwali": {
+      "name": "Diwali",
+      "emoji": "🪔",
+      "startDate": "10-15",
+      "endDate": "11-15",
+      "enableSnow": false
+    },
+    "thanksgiving": {
+      "name": "Thanksgiving",
+      "emoji": "🦃",
+      "startDate": "11-20",
+      "endDate": "11-30",
+      "enableSnow": false
+    },
+    "none": {
+      "name": "None",
+      "emoji": "",
+      "startDate": null,
+      "endDate": null,
+      "enableSnow": false
+    }
+  },
+  "seasons": {
+    "winter": {
+      "name": "Winter Season",
+      "startDate": "12-01",
+      "endDate": "02-28",
+      "enableSnow": true,
+      "theme": {
+        "backgroundColor": "#f0f4f8",
+        "textColor": "#1a2332",
+        "accentColor": "#5b9bd5",
+        "linkColor": "#0066cc",
+        "linkHoverColor": "#004999"
+      }
+    },
+    "spring": {
+      "name": "Spring Season",
+      "startDate": "03-01",
+      "endDate": "05-31",
+      "enableSnow": false,
+      "theme": {
+        "backgroundColor": "#fff9f0",
+        "textColor": "#2d3436",
+        "accentColor": "#ff9ff3",
+        "linkColor": "#e17055",
+        "linkHoverColor": "#d63031"
+      }
+    },
+    "summer": {
+      "name": "Summer Season",
+      "startDate": "06-01",
+      "endDate": "08-31",
+      "enableSnow": false,
+      "theme": {
+        "backgroundColor": "#fffef7",
+        "textColor": "#2c3e50",
+        "accentColor": "#f39c12",
+        "linkColor": "#e67e22",
+        "linkHoverColor": "#d35400"
+      }
+    },
+    "monsoon": {
+      "name": "Monsoon Season",
+      "startDate": "06-15",
+      "endDate": "09-30",
+      "enableSnow": false,
+      "theme": {
+        "backgroundColor": "#e3f2fd",
+        "textColor": "#1a237e",
+        "accentColor": "#1976d2",
+        "linkColor": "#1565c0",
+        "linkHoverColor": "#0d47a1"
+      }
+    },
+    "autumn": {
+      "name": "Autumn Season",
+      "startDate": "09-01",
+      "endDate": "11-30",
+      "enableSnow": false,
+      "theme": {
+        "backgroundColor": "#fff5e6",
+        "textColor": "#5d4037",
+        "accentColor": "#d35400",
+        "linkColor": "#c0392b",
+        "linkHoverColor": "#922b21"
+      }
+    },
+    "none": {
+      "name": "None",
+      "startDate": null,
+      "endDate": null,
+      "enableSnow": false,
+      "theme": {
+        "backgroundColor": "#fff",
+        "textColor": "#000",
+        "accentColor": "#0066cc",
+        "linkColor": "#0066cc",
+        "linkHoverColor": "#004999"
+      }
+    }
+  }
+}

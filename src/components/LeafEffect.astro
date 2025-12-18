@@ -1,0 +1,152 @@
+---
+// Leaf Fall Effect Component - For Spring, Summer, Autumn, and Monsoon
+interface Props {
+  season?: string;
+}
+
+const { season = 'none' } = Astro.props;
+
+// Determine leaf type and color based on season
+const leafConfig = {
+  spring: { emoji: '🌸', count: 30 },  // Cherry blossoms
+  summer: { emoji: '🍃', count: 25 },  // Green leaves
+  monsoon: { emoji: '🍃', count: 40 }, // Green leaves (more for rain)
+  autumn: { emoji: '🍂', count: 35 }   // Dry brown leaves
+};
+
+const config = leafConfig[season as keyof typeof leafConfig];
+---
+
+{config && (
+  <div id="leaf-container" data-season={season}></div>
+
+  <style is:global>
+    #leaf-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 998;
+      overflow: hidden;
+    }
+
+    .leaf {
+      position: fixed;
+      top: -50px;
+      font-size: 1.5em;
+      animation: fall-leaf linear infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes fall-leaf {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      25% {
+        transform: translateX(10px) rotate(90deg);
+      }
+      50% {
+        transform: translateX(-10px) rotate(180deg);
+      }
+      75% {
+        transform: translateX(10px) rotate(270deg);
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    /* Spring blossoms flutter gently */
+    [data-season="spring"] .leaf {
+      animation: fall-blossom linear infinite;
+    }
+
+    @keyframes fall-blossom {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      25% {
+        transform: translateX(15px) rotate(45deg);
+      }
+      50% {
+        transform: translateX(-15px) rotate(90deg);
+      }
+      75% {
+        transform: translateX(10px) rotate(135deg);
+      }
+      100% {
+        transform: translateY(100vh) rotate(180deg);
+      }
+    }
+
+    /* Monsoon leaves fall with rain */
+    [data-season="monsoon"] .leaf {
+      animation: fall-rain-leaf linear infinite;
+    }
+
+    @keyframes fall-rain-leaf {
+      0% {
+        transform: translateY(0) rotate(0deg) translateX(0);
+      }
+      100% {
+        transform: translateY(100vh) rotate(180deg) translateX(-20px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .leaf {
+        animation: none;
+        opacity: 0;
+      }
+    }
+  </style>
+
+  <script is:inline define:vars={{ config }}>
+    (function() {
+      function createLeaf() {
+        const leaf = document.createElement('div');
+        leaf.className = 'leaf';
+        leaf.textContent = config.emoji;
+        
+        // Random horizontal position
+        leaf.style.left = Math.random() * 100 + '%';
+        
+        // Random animation duration (8-15 seconds for gentle fall)
+        leaf.style.animationDuration = (Math.random() * 7 + 8) + 's';
+        
+        // Random delay
+        leaf.style.animationDelay = (Math.random() * 5) + 's';
+        
+        // Random size variation
+        const scale = Math.random() * 0.5 + 0.7;
+        leaf.style.transform = `scale(${scale})`;
+        
+        // Random opacity
+        leaf.style.opacity = Math.random() * 0.4 + 0.6;
+        
+        return leaf;
+      }
+
+      function initLeafEffect() {
+        const container = document.getElementById('leaf-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Create leaves based on season config
+        for (let i = 0; i < config.count; i++) {
+          container.appendChild(createLeaf());
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLeafEffect);
+      } else {
+        initLeafEffect();
+      }
+    })();
+  </script>
+)}

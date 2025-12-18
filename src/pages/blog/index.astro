@@ -1,12 +1,14 @@
 ---
 import '../../styles/global.css';
 import { getHashnodeBlogs, groupBlogsBySeries } from '../../lib/hashnode';
+import { getCurrentTheme } from '../../lib/theme';
 import SnowEffect from '../../components/SnowEffect.astro';
+import RainEffect from '../../components/RainEffect.astro';
+import LeafEffect from '../../components/LeafEffect.astro';
 import FestiveDecoration from '../../components/FestiveDecoration.astro';
+import SeasonDecoration from '../../components/SeasonDecoration.astro';
 
-const festivalConfig = await import('../../data/festival.json');
-const currentFestival = festivalConfig.currentFestival || 'none';
-const enableSnow = festivalConfig.festivals[currentFestival]?.enableSnow || false;
+const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 
 const hashnodeBlogs = await getHashnodeBlogs(50);
 const blogsBySeries = groupBlogsBySeries(hashnodeBlogs);
@@ -25,7 +27,10 @@ const series = Object.keys(blogsBySeries).sort();
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
 </head>
 <body>
+	<SeasonDecoration season={currentSeason} />
 	{enableSnow && <SnowEffect />}
+	{enableRain && <RainEffect />}
+	{enableLeaves && <LeafEffect season={currentSeason} />}
 	<header>
 		<div class="header-content">
 			<h1>Harikrushna Patel<FestiveDecoration festival={currentFestival} /></h1>

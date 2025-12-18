@@ -1,0 +1,62 @@
+---
+// Season Theme Component - Applies seasonal styling to the website
+type SeasonType = 'winter' | 'spring' | 'summer' | 'monsoon' | 'autumn' | 'none';
+
+interface Props {
+  season?: string;
+}
+
+const { season = 'none' } = Astro.props;
+const seasonKey = season as SeasonType;
+
+// Load season data
+const themeData = await import('../data/theme.json');
+const seasonTheme = themeData.seasons[seasonKey]?.theme || {
+  backgroundColor: '#fff',
+  textColor: '#000',
+  accentColor: '#0066cc',
+  linkColor: '#0066cc',
+  linkHoverColor: '#004999'
+};
+---
+
+<style is:global set:html={`
+  :root {
+    --season-bg: ${seasonTheme.backgroundColor};
+    --season-text: ${seasonTheme.textColor};
+    --season-accent: ${seasonTheme.accentColor};
+    --season-link: ${seasonTheme.linkColor};
+    --season-link-hover: ${seasonTheme.linkHoverColor};
+  }
+  
+  html {
+    background: ${seasonTheme.backgroundColor} !important;
+    color: ${seasonTheme.textColor} !important;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  body {
+    background: ${seasonTheme.backgroundColor} !important;
+    color: ${seasonTheme.textColor} !important;
+  }
+
+  a {
+    color: ${seasonTheme.linkColor} !important;
+  }
+
+  a:hover {
+    color: ${seasonTheme.linkHoverColor} !important;
+  }
+
+  .nav a.active {
+    color: ${seasonTheme.accentColor} !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: ${seasonTheme.textColor} !important;
+  }
+
+  p, .tagline {
+    color: ${seasonTheme.textColor} !important;
+  }
+`}></style>

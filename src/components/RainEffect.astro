@@ -1,0 +1,83 @@
+---
+// Monsoon Rain Effect Component
+---
+
+<div id="rain-container"></div>
+
+<style is:global>
+  #rain-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .raindrop {
+    position: fixed;
+    top: -20px;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, rgba(100, 150, 200, 0.6));
+    animation: fall-rain linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes fall-rain {
+    to {
+      transform: translateY(100vh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .raindrop {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    function createRaindrop() {
+      const drop = document.createElement('div');
+      drop.className = 'raindrop';
+      
+      // Random horizontal position
+      drop.style.left = Math.random() * 100 + '%';
+      
+      // Random animation duration (0.5-1.5 seconds)
+      drop.style.animationDuration = (Math.random() + 0.5) + 's';
+      
+      // Random delay
+      drop.style.animationDelay = (Math.random() * 2) + 's';
+      
+      // Random opacity
+      drop.style.opacity = Math.random() * 0.5 + 0.3;
+      
+      return drop;
+    }
+
+    function initRainEffect() {
+      const container = document.getElementById('rain-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      // Create raindrops (100 drops for heavy rain effect)
+      const dropCount = 100;
+      for (let i = 0; i < dropCount; i++) {
+        container.appendChild(createRaindrop());
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initRainEffect);
+    } else {
+      initRainEffect();
+    }
+  })();
+</script>

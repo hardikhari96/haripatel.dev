@@ -1,6 +1,7 @@
 ---
 // Festive Decoration Component - Switchable for different festivals
-type FestivalType = 'christmas' | 'diwali' | 'halloween' | 'newyear' | 'none';
+type FestivalType = 'christmas' | 'newyear' | 'valentines' | 'holi' | 'easter' | 'eid' | 
+  'independenceday' | 'ganeshchaturthi' | 'halloween' | 'diwali' | 'thanksgiving' | 'none';
 
 interface Props {
   festival?: string;
@@ -10,8 +11,8 @@ const { festival = 'none' } = Astro.props;
 const festivalKey = festival as FestivalType;
 
 // Load festival data
-const festivalData = await import('../data/festival.json');
-const decoration = festivalData.festivals[festivalKey]?.emoji || '';
+const themeData = await import('../data/theme.json');
+const decoration = themeData.festivals[festivalKey]?.emoji || '';
 ---
 
 {decoration && (
@@ -53,6 +54,84 @@ const decoration = festivalData.festivals[festivalKey]?.emoji || '';
     }
   }
 
+  .festive-decoration[data-festival="valentines"] {
+    animation: heart-beat 1s ease-in-out infinite;
+  }
+
+  @keyframes heart-beat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  .festive-decoration[data-festival="holi"] {
+    animation: color-splash 3s linear infinite;
+  }
+
+  @keyframes color-splash {
+    0%, 100% {
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  .festive-decoration[data-festival="easter"] {
+    animation: bunny-hop 1s ease-in-out infinite;
+  }
+
+  @keyframes bunny-hop {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .festive-decoration[data-festival="eid"] {
+    animation: moon-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes moon-glow {
+    0%, 100% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(1.5);
+    }
+  }
+
+  .festive-decoration[data-festival="independenceday"] {
+    animation: flag-wave 2s ease-in-out infinite;
+  }
+
+  @keyframes flag-wave {
+    0%, 100% {
+      transform: rotate(-10deg);
+    }
+    50% {
+      transform: rotate(10deg);
+    }
+  }
+
+  .festive-decoration[data-festival="ganeshchaturthi"] {
+    animation: gentle-sway 2s ease-in-out infinite;
+  }
+
+  @keyframes gentle-sway {
+    0%, 100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+
   .festive-decoration[data-festival="diwali"] {
     animation: diya-glow 2s ease-in-out infinite;
   }
@@ -81,6 +160,19 @@ const decoration = festivalData.festivals[festivalKey]?.emoji || '';
     }
     75% {
       transform: rotate(15deg);
+    }
+  }
+
+  .festive-decoration[data-festival="thanksgiving"] {
+    animation: turkey-strut 1.5s ease-in-out infinite;
+  }
+
+  @keyframes turkey-strut {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      transform: scale(1.1) rotate(5deg);
     }
   }
 
