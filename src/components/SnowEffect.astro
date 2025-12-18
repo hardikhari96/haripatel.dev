@@ -1,0 +1,87 @@
+---
+// Christmas Snowflake Effect Component
+---
+
+<div id="snow-container"></div>
+
+<style is:global>
+  #snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .snowflake {
+    position: fixed;
+    top: -20px;
+    color: #87CEEB;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    text-shadow: 0 0 3px rgba(135, 206, 235, 0.8);
+    animation: fall linear infinite;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(100vh) rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .snowflake {
+      animation: none;
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.textContent = '❄';
+      
+      // Random horizontal position
+      snowflake.style.left = Math.random() * 100 + '%';
+      
+      // Random animation duration (10-20 seconds)
+      snowflake.style.animationDuration = (Math.random() * 10 + 10) + 's';
+      
+      // Random delay
+      snowflake.style.animationDelay = (Math.random() * 5) + 's';
+      
+      // Random size
+      snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
+      
+      // Random opacity
+      snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+      
+      return snowflake;
+    }
+
+    function init() {
+      const container = document.getElementById('snow-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 50; i++) {
+        container.appendChild(createSnowflake());
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
