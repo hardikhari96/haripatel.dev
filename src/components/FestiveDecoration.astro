@@ -1,20 +1,17 @@
 ---
 // Festive Decoration Component - Switchable for different festivals
+type FestivalType = 'christmas' | 'diwali' | 'halloween' | 'newyear' | 'none';
+
 interface Props {
-  festival?: 'christmas' | 'diwali' | 'halloween' | 'newyear' | 'none';
+  festival?: string;
 }
 
-const { festival = 'christmas' } = Astro.props;
+const { festival = 'none' } = Astro.props;
+const festivalKey = festival as FestivalType;
 
-const decorations = {
-  christmas: '🎅',
-  diwali: '🪔',
-  halloween: '🎃',
-  newyear: '🎊',
-  none: ''
-};
-
-const decoration = decorations[festival];
+// Load festival data
+const festivalData = await import('../data/festival.json');
+const decoration = festivalData.festivals[festivalKey]?.emoji || '';
 ---
 
 {decoration && (
