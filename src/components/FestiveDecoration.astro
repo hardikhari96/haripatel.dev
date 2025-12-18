@@ -1,0 +1,108 @@
+---
+// Festive Decoration Component - Switchable for different festivals
+interface Props {
+  festival?: 'christmas' | 'diwali' | 'halloween' | 'newyear' | 'none';
+}
+
+const { festival = 'christmas' } = Astro.props;
+
+const decorations = {
+  christmas: '🎅',
+  diwali: '🪔',
+  halloween: '🎃',
+  newyear: '🎊',
+  none: ''
+};
+
+const decoration = decorations[festival];
+---
+
+{decoration && (
+  <span class="festive-decoration" data-festival={festival}>
+    {decoration}
+  </span>
+)}
+
+<style>
+  .festive-decoration {
+    display: inline-block;
+    margin-left: 0.3rem;
+    font-size: 1.2em;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-5px) rotate(-10deg);
+    }
+    75% {
+      transform: translateY(-3px) rotate(10deg);
+    }
+  }
+
+  .festive-decoration[data-festival="christmas"] {
+    animation: santa-wiggle 1.5s ease-in-out infinite;
+  }
+
+  @keyframes santa-wiggle {
+    0%, 100% {
+      transform: rotate(-5deg);
+    }
+    50% {
+      transform: rotate(5deg);
+    }
+  }
+
+  .festive-decoration[data-festival="diwali"] {
+    animation: diya-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes diya-glow {
+    0%, 100% {
+      filter: brightness(1);
+      transform: scale(1);
+    }
+    50% {
+      filter: brightness(1.5);
+      transform: scale(1.1);
+    }
+  }
+
+  .festive-decoration[data-festival="halloween"] {
+    animation: spooky-shake 3s ease-in-out infinite;
+  }
+
+  @keyframes spooky-shake {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-15deg);
+    }
+    75% {
+      transform: rotate(15deg);
+    }
+  }
+
+  .festive-decoration[data-festival="newyear"] {
+    animation: party-pop 1s ease-in-out infinite;
+  }
+
+  @keyframes party-pop {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      transform: scale(1.2) rotate(180deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .festive-decoration {
+      animation: none;
+    }
+  }
+</style>
