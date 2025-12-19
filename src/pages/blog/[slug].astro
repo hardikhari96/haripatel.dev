@@ -1,7 +1,12 @@
 ---
 import '../../styles/global.css';
 import { getCollection } from 'astro:content';
+import { getCurrentTheme } from '../../lib/theme';
 import SnowEffect from '../../components/SnowEffect.astro';
+import RainEffect from '../../components/RainEffect.astro';
+import LeafEffect from '../../components/LeafEffect.astro';
+import FestiveDecoration from '../../components/FestiveDecoration.astro';
+import SeasonDecoration from '../../components/SeasonDecoration.astro';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -13,6 +18,7 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 ---
 
 <!DOCTYPE html>
@@ -27,7 +33,10 @@ const { Content } = await entry.render();
 	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
 </head>
 <body>
-	<SnowEffect />
+	<SeasonDecoration season={currentSeason} />
+	{enableSnow && <SnowEffect />}
+	{enableRain && <RainEffect />}
+	{enableLeaves && <LeafEffect season={currentSeason} />}
 	<header>
 		<a href="/">← Back to home</a>
 	</header>
