@@ -8,6 +8,7 @@ import RainEffect from '../components/RainEffect.astro';
 import LeafEffect from '../components/LeafEffect.astro';
 import FestiveDecoration from '../components/FestiveDecoration.astro';
 import SeasonDecoration from '../components/SeasonDecoration.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 
 const profile = await import('../data/profile.json');
 const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
@@ -38,6 +39,7 @@ const sortedProjects = allProjects.sort((a, b) =>
 	{enableSnow && <SnowEffect />}
 	{enableRain && <RainEffect />}
 	{enableLeaves && <LeafEffect season={currentSeason} />}
+	<ThemeToggle />
 	<!-- Header -->
 	<header>
 		<div class="header-content">

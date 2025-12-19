@@ -1,0 +1,168 @@
+---
+// Theme Toggle Component - Toggle festive decorations and effects
+---
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme effects" title="Toggle festive effects">
+  <span class="toggle-icon">✨</span>
+</button>
+
+<style>
+  .theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
+
+  .theme-toggle.disabled {
+    background: #f5f5f5;
+    border-color: #ccc;
+  }
+
+  .theme-toggle.disabled .toggle-icon {
+    opacity: 0.4;
+    filter: grayscale(100%);
+  }
+
+  .toggle-icon {
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .theme-toggle {
+      bottom: 15px;
+      right: 15px;
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle {
+      transition: none;
+    }
+    .theme-toggle:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Theme toggle functionality
+  const STORAGE_KEY = 'theme-effects-enabled';
+  
+  function getThemePreference(): boolean {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored === null ? true : stored === 'true';
+  }
+
+  function setThemePreference(enabled: boolean): void {
+    localStorage.setItem(STORAGE_KEY, String(enabled));
+  }
+
+  function applyThemeState(enabled: boolean): void {
+    const button = document.getElementById('theme-toggle');
+    const containers = [
+      document.getElementById('snow-container'),
+      document.getElementById('rain-container'),
+      document.getElementById('leaf-container')
+    ];
+
+    if (button) {
+      if (enabled) {
+        button.classList.remove('disabled');
+        button.setAttribute('title', 'Disable festive effects');
+      } else {
+        button.classList.add('disabled');
+        button.setAttribute('title', 'Enable festive effects');
+      }
+    }
+
+    // Show/hide effect containers
+    containers.forEach(container => {
+      if (container) {
+        container.style.display = enabled ? 'block' : 'none';
+      }
+    });
+
+    // Toggle festive decorations
+    const decorations = document.querySelectorAll('.festive-decoration');
+    decorations.forEach((deco) => {
+      (deco as HTMLElement).style.display = enabled ? 'inline-block' : 'none';
+    });
+
+    // Toggle season theme colors
+    if (!enabled) {
+      // Reset to default colors when disabled
+      document.documentElement.style.setProperty('--season-bg', '#fff');
+      document.documentElement.style.setProperty('--season-text', '#000');
+      document.documentElement.style.setProperty('--season-accent', '#0066cc');
+      document.documentElement.style.setProperty('--season-link', '#0066cc');
+      document.documentElement.style.setProperty('--season-link-hover', '#004999');
+      document.documentElement.style.background = '#fff';
+      document.documentElement.style.color = '#000';
+      document.body.style.background = '#fff';
+      document.body.style.color = '#000';
+    } else {
+      // Re-enable theme colors by removing inline overrides
+      document.documentElement.style.removeProperty('--season-bg');
+      document.documentElement.style.removeProperty('--season-text');
+      document.documentElement.style.removeProperty('--season-accent');
+      document.documentElement.style.removeProperty('--season-link');
+      document.documentElement.style.removeProperty('--season-link-hover');
+      document.documentElement.style.removeProperty('background');
+      document.documentElement.style.removeProperty('color');
+      document.body.style.removeProperty('background');
+      document.body.style.removeProperty('color');
+    }
+  }
+
+  function init(): void {
+    const button = document.getElementById('theme-toggle');
+    if (!button) return;
+
+    // Apply saved preference
+    const enabled = getThemePreference();
+    applyThemeState(enabled);
+
+    // Toggle on click
+    button.addEventListener('click', () => {
+      const currentState = getThemePreference();
+      const newState = !currentState;
+      setThemePreference(newState);
+      applyThemeState(newState);
+    });
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Re-apply on navigation (for view transitions)
+  document.addEventListener('astro:after-swap', init);
+</script>
