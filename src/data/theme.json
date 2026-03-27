@@ -96,11 +96,11 @@
       "endDate": "02-28",
       "enableSnow": true,
       "theme": {
-        "backgroundColor": "#f0f4f8",
-        "textColor": "#1a2332",
-        "accentColor": "#5b9bd5",
-        "linkColor": "#0066cc",
-        "linkHoverColor": "#004999"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#79c0ff",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     },
     "spring": {
@@ -109,11 +109,11 @@
       "endDate": "05-31",
       "enableSnow": false,
       "theme": {
-        "backgroundColor": "#fff9f0",
-        "textColor": "#2d3436",
-        "accentColor": "#ff9ff3",
-        "linkColor": "#e17055",
-        "linkHoverColor": "#d63031"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#3fb950",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     },
     "summer": {
@@ -122,11 +122,11 @@
       "endDate": "08-31",
       "enableSnow": false,
       "theme": {
-        "backgroundColor": "#fffef7",
-        "textColor": "#2c3e50",
-        "accentColor": "#f39c12",
-        "linkColor": "#e67e22",
-        "linkHoverColor": "#d35400"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#f0883e",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     },
     "monsoon": {
@@ -135,11 +135,11 @@
       "endDate": "09-30",
       "enableSnow": false,
       "theme": {
-        "backgroundColor": "#e3f2fd",
-        "textColor": "#1a237e",
-        "accentColor": "#1976d2",
-        "linkColor": "#1565c0",
-        "linkHoverColor": "#0d47a1"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#58a6ff",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     },
     "autumn": {
@@ -148,11 +148,11 @@
       "endDate": "11-30",
       "enableSnow": false,
       "theme": {
-        "backgroundColor": "#fff5e6",
-        "textColor": "#5d4037",
-        "accentColor": "#d35400",
-        "linkColor": "#c0392b",
-        "linkHoverColor": "#922b21"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#f0883e",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     },
     "none": {
@@ -161,11 +161,11 @@
       "endDate": null,
       "enableSnow": false,
       "theme": {
-        "backgroundColor": "#fff",
-        "textColor": "#000",
-        "accentColor": "#0066cc",
-        "linkColor": "#0066cc",
-        "linkHoverColor": "#004999"
+        "backgroundColor": "#0d1117",
+        "textColor": "#c9d1d9",
+        "accentColor": "#3fb950",
+        "linkColor": "#58a6ff",
+        "linkHoverColor": "#79c0ff"
       }
     }
   }

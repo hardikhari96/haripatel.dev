@@ -12,11 +12,11 @@ const seasonKey = season as SeasonType;
 // Load season data
 const themeData = await import('../data/theme.json');
 const seasonTheme = themeData.seasons[seasonKey]?.theme || {
-  backgroundColor: '#fff',
-  textColor: '#000',
-  accentColor: '#0066cc',
-  linkColor: '#0066cc',
-  linkHoverColor: '#004999'
+  backgroundColor: '#0d1117',
+  textColor: '#c9d1d9',
+  accentColor: '#3fb950',
+  linkColor: '#58a6ff',
+  linkHoverColor: '#79c0ff'
 };
 ---
 
@@ -53,10 +53,6 @@ const seasonTheme = themeData.seasons[seasonKey]?.theme || {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: ${seasonTheme.textColor} !important;
-  }
-
-  p, .tagline {
     color: ${seasonTheme.textColor} !important;
   }
 `}></style>

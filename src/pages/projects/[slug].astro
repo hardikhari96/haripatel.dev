@@ -54,7 +54,7 @@ const { festival: currentFestival, season: currentSeason, enableSnow, enableRain
 		{entry.data.tags && entry.data.tags.length > 0 && (
 			<div style="margin-top: 1rem; margin-bottom: 2rem;">
 				{entry.data.tags.map((tag: string) => (
-					<span style="display: inline-block; background: #f0f0f0; padding: 0.1rem 0.5rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 3px; font-size: 0.9rem;">
+					<span style="display: inline-block; background: #161b22; border: 1px solid #30363d; padding: 0.1rem 0.5rem; margin-right: 0.5rem; margin-bottom: 0.5rem; font-size: 0.85rem; color: #8b949e;">
 						{tag}
 					</span>
 				))}
@@ -66,7 +66,7 @@ const { festival: currentFestival, season: currentSeason, enableSnow, enableRain
 		</div>
 
 		{(entry.data.github || entry.data.link) && (
-			<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
+			<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #21262d;">
 				{entry.data.github && (
 					<p><a href={entry.data.github} target="_blank" rel="noopener">View on GitHub →</a></p>
 				)}
@@ -96,25 +96,29 @@ const { festival: currentFestival, season: currentSeason, enableSnow, enableRain
 
 	.blog-content :global(p) {
 		margin-bottom: 1rem;
+		color: #8b949e;
 	}
 
 	.blog-content :global(pre) {
-		background: #f5f5f5;
+		background: #161b22;
 		padding: 1rem;
 		overflow-x: auto;
 		margin-bottom: 1rem;
-		border: 1px solid #e0e0e0;
+		border: 1px solid #30363d;
+		color: #c9d1d9;
 	}
 
 	.blog-content :global(code) {
-		font-family: 'Courier New', monospace;
+		font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Courier New', monospace;
 		font-size: 0.9rem;
+		color: #79c0ff;
 	}
 
 	.blog-content :global(ul),
 	.blog-content :global(ol) {
 		margin-left: 2rem;
 		margin-bottom: 1rem;
+		color: #8b949e;
 	}
 
 	.blog-content :global(li) {
@@ -122,13 +126,14 @@ const { festival: currentFestival, season: currentSeason, enableSnow, enableRain
 	}
 
 	.blog-content :global(blockquote) {
-		border-left: 3px solid #0066cc;
+		border-left: 3px solid #3fb950;
 		padding-left: 1rem;
 		margin: 1.5rem 0;
-		color: #333;
+		color: #8b949e;
 	}
 
 	.blog-content :global(strong) {
 		font-weight: 600;
+		color: #e6edf3;
 	}
 </style>
