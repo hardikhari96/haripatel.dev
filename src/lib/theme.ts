@@ -67,19 +67,26 @@ export function getAutoSeason(): string {
 }
 
 export function getCurrentTheme() {
-  const festival = themeConfig.currentFestival === 'auto' 
-    ? getAutoFestival() 
-    : themeConfig.currentFestival;
-    
-  const season = themeConfig.currentSeason === 'auto'
-    ? getAutoSeason()
-    : themeConfig.currentSeason;
+  const festivalDisabled = themeConfig.enableFestivalEffects === false;
+  const seasonDisabled = themeConfig.enableSeasonEffects === false;
+
+  const festival = festivalDisabled
+    ? 'none'
+    : themeConfig.currentFestival === 'auto'
+      ? getAutoFestival()
+      : themeConfig.currentFestival;
+
+  const season = seasonDisabled
+    ? 'none'
+    : themeConfig.currentSeason === 'auto'
+      ? getAutoSeason()
+      : themeConfig.currentSeason;
 
   return {
     festival,
     season,
-    enableSnow: themeConfig.seasons[season as SeasonKey]?.enableSnow || false,
-    enableRain: season === 'monsoon',
-    enableLeaves: ['spring', 'autumn'].includes(season)
+    enableSnow: !seasonDisabled && (themeConfig.seasons[season as SeasonKey]?.enableSnow || false),
+    enableRain: !seasonDisabled && season === 'monsoon',
+    enableLeaves: !seasonDisabled && ['spring', 'autumn'].includes(season)
   };
 }

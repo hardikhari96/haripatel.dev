@@ -1,4 +1,6 @@
 {
+  "enableFestivalEffects": false,
+  "enableSeasonEffects": false,
   "currentFestival": "auto",
   "currentSeason": "auto",
   "festivals": {
