@@ -14,7 +14,17 @@
         <span class="chatbot-status">Online</span>
       </div>
     </div>
-    <button id="chatbot-close" class="chatbot-close" title="Close chat">&times;</button>
+    <div class="chatbot-header-actions">
+      <button id="chatbot-fullscreen" class="chatbot-header-btn" title="Toggle fullscreen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </button>
+      <button id="chatbot-close" class="chatbot-header-btn" title="Close chat">&times;</button>
+    </div>
   </div>
   <div id="chatbot-messages" class="chatbot-messages">
     <div class="chatbot-msg-row bot-row">
@@ -63,6 +73,7 @@
     box-shadow: 0 6px 20px rgba(0,102,204,0.5);
   }
 
+  /* Container - normal mode */
   .chatbot-container {
     position: fixed;
     bottom: 88px;
@@ -77,9 +88,27 @@
     z-index: 999;
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     overflow: hidden;
+    transition: all 0.3s ease;
   }
-  .chatbot-hidden {
-    display: none !important;
+  .chatbot-hidden { display: none !important; }
+
+  /* Fullscreen mode */
+  .chatbot-container.chatbot-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    z-index: 10000;
+  }
+  .chatbot-container.chatbot-fullscreen .chatbot-messages {
+    max-height: none;
+    min-height: 0;
+    flex: 1;
   }
 
   /* Header */
@@ -90,28 +119,18 @@
     padding: 12px 16px;
     background: linear-gradient(135deg, #0066cc, #0052a3);
     color: #fff;
+    flex-shrink: 0;
   }
   .chatbot-header-left {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  .chatbot-avatar-sm {
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-  .chatbot-title {
-    display: block;
-    font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.2;
-  }
-  .chatbot-status {
-    display: block;
-    font-size: 0.7rem;
-    opacity: 0.85;
-  }
-  .chatbot-close {
+  .chatbot-avatar-sm { font-size: 1.4rem; line-height: 1; }
+  .chatbot-title { display: block; font-weight: 600; font-size: 0.95rem; line-height: 1.2; }
+  .chatbot-status { display: block; font-size: 0.7rem; opacity: 0.85; }
+  .chatbot-header-actions { display: flex; gap: 6px; }
+  .chatbot-header-btn {
     background: rgba(255,255,255,0.2);
     border: none;
     font-size: 1.2rem;
@@ -126,9 +145,7 @@
     justify-content: center;
     transition: background 0.2s;
   }
-  .chatbot-close:hover {
-    background: rgba(255,255,255,0.35);
-  }
+  .chatbot-header-btn:hover { background: rgba(255,255,255,0.35); }
 
   /* Messages area */
   .chatbot-messages {
@@ -153,15 +170,11 @@
     max-width: 88%;
     width: fit-content;
   }
-  .chatbot-msg-row.bot-row {
-    align-self: flex-start;
-    margin-right: auto;
+  .chatbot-container.chatbot-fullscreen .chatbot-msg-row {
+    max-width: 720px;
   }
-  .chatbot-msg-row.user-row {
-    align-self: flex-end;
-    flex-direction: row-reverse;
-    margin-left: auto;
-  }
+  .chatbot-msg-row.bot-row { align-self: flex-start; margin-right: auto; }
+  .chatbot-msg-row.user-row { align-self: flex-end; flex-direction: row-reverse; margin-left: auto; }
 
   .chatbot-msg-row .chatbot-avatar {
     font-size: 1rem;
@@ -177,9 +190,7 @@
     background: #e2e8f0;
     margin-top: 2px;
   }
-  .chatbot-msg-row.user-row .chatbot-avatar {
-    background: #dbeafe;
-  }
+  .chatbot-msg-row.user-row .chatbot-avatar { background: #dbeafe; }
 
   /* Bubbles */
   .chatbot-msg-row .chatbot-bubble {
@@ -187,7 +198,6 @@
     font-size: 0.88rem;
     line-height: 1.55;
     word-wrap: break-word;
-    white-space: pre-wrap;
     min-width: 0;
     max-width: 100%;
   }
@@ -203,29 +213,91 @@
     color: #fff;
     border-radius: 16px 4px 16px 16px;
     box-shadow: 0 1px 3px rgba(0,102,204,0.2);
+    white-space: pre-wrap;
   }
 
-  /* Links inside bot bubbles */
-  .chatbot-msg-row .bot-bubble a {
+  /* ===== Markdown content styling inside bot bubbles ===== */
+  .bot-bubble h1, .bot-bubble h2, .bot-bubble h3,
+  .bot-bubble h4, .bot-bubble h5, .bot-bubble h6 {
+    margin: 8px 0 4px 0;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  .bot-bubble h1 { font-size: 1.1rem; }
+  .bot-bubble h2 { font-size: 1.05rem; }
+  .bot-bubble h3 { font-size: 1rem; }
+  .bot-bubble h4, .bot-bubble h5, .bot-bubble h6 { font-size: 0.92rem; }
+  .bot-bubble p { margin: 4px 0; }
+  .bot-bubble ul, .bot-bubble ol { margin: 4px 0; padding-left: 20px; }
+  .bot-bubble li { margin: 2px 0; }
+  .bot-bubble a {
     color: #0066cc;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .chatbot-msg-row .bot-bubble a:hover {
-    color: #004999;
+  .bot-bubble a:hover { color: #004999; }
+  .bot-bubble strong { font-weight: 600; }
+  .bot-bubble em { font-style: italic; }
+  .bot-bubble code {
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-family: 'Fira Code', 'Consolas', monospace;
+  }
+  .bot-bubble pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 6px 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  .bot-bubble pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+  .bot-bubble blockquote {
+    border-left: 3px solid #0066cc;
+    padding-left: 10px;
+    margin: 6px 0;
+    color: #475569;
+    font-style: italic;
+  }
+  .bot-bubble hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 8px 0;
+  }
+
+  /* Table styling */
+  .bot-bubble table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+    font-size: 0.82rem;
+  }
+  .bot-bubble th, .bot-bubble td {
+    border: 1px solid #e2e8f0;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  .bot-bubble th {
+    background: #f1f5f9;
+    font-weight: 600;
+  }
+  .bot-bubble tr:nth-child(even) td {
+    background: #f8fafc;
   }
 
   /* Typing indicator */
-  .typing-indicator {
-    display: flex;
-    gap: 4px;
-    padding: 10px 14px;
-  }
+  .typing-indicator { display: flex; gap: 4px; padding: 10px 14px; }
   .typing-indicator span {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #94a3b8;
+    width: 7px; height: 7px; border-radius: 50%; background: #94a3b8;
     animation: typingBounce 1.2s infinite;
   }
   .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
@@ -242,6 +314,7 @@
     padding: 12px 16px;
     border-top: 1px solid #e2e8f0;
     background: #fff;
+    flex-shrink: 0;
   }
   .chatbot-input-area input {
     flex: 1;
@@ -253,10 +326,7 @@
     transition: border-color 0.2s;
     background: #f8fafc;
   }
-  .chatbot-input-area input:focus {
-    border-color: #0066cc;
-    background: #fff;
-  }
+  .chatbot-input-area input:focus { border-color: #0066cc; background: #fff; }
   .chatbot-send {
     background: linear-gradient(135deg, #0066cc, #0052a3);
     color: #fff;
@@ -271,66 +341,33 @@
     transition: transform 0.15s;
     flex-shrink: 0;
   }
-  .chatbot-send:hover {
-    transform: scale(1.08);
-  }
-  .chatbot-send:disabled {
-    background: #94a3b8;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .chatbot-send:hover { transform: scale(1.08); }
+  .chatbot-send:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
 
-  /* Dark theme */
-  [data-theme="dark"] .chatbot-container {
-    background: #0f172a;
-    border-color: #1e293b;
-  }
-  [data-theme="dark"] .chatbot-messages {
-    background: #0f172a;
-  }
+  /* ===== Dark theme ===== */
+  [data-theme="dark"] .chatbot-container { background: #0f172a; border-color: #1e293b; }
+  [data-theme="dark"] .chatbot-messages { background: #0f172a; }
   [data-theme="dark"] .chatbot-msg-row .bot-bubble {
-    background: #1e293b;
-    color: #e2e8f0;
-    border-color: #334155;
+    background: #1e293b; color: #e2e8f0; border-color: #334155;
   }
-  [data-theme="dark"] .chatbot-msg-row .bot-bubble a {
-    color: #60a5fa;
-  }
-  [data-theme="dark"] .chatbot-msg-row .bot-bubble a:hover {
-    color: #93bbfd;
-  }
-  [data-theme="dark"] .chatbot-input-area {
-    border-color: #1e293b;
-    background: #0f172a;
-  }
-  [data-theme="dark"] .chatbot-input-area input {
-    background: #1e293b;
-    color: #e2e8f0;
-    border-color: #334155;
-  }
-  [data-theme="dark"] .chatbot-input-area input:focus {
-    background: #1e293b;
-  }
-  [data-theme="dark"] .chatbot-close {
-    color: #fff;
-  }
-  [data-theme="dark"] .chatbot-msg-row .chatbot-avatar {
-    background: #334155;
-  }
-  [data-theme="dark"] .chatbot-msg-row.user-row .chatbot-avatar {
-    background: #1e3a5f;
-  }
+  [data-theme="dark"] .bot-bubble a { color: #60a5fa; }
+  [data-theme="dark"] .bot-bubble a:hover { color: #93bbfd; }
+  [data-theme="dark"] .bot-bubble code { background: #334155; color: #e2e8f0; }
+  [data-theme="dark"] .bot-bubble pre { background: #0f172a; border: 1px solid #334155; }
+  [data-theme="dark"] .bot-bubble th { background: #334155; }
+  [data-theme="dark"] .bot-bubble th, [data-theme="dark"] .bot-bubble td { border-color: #475569; }
+  [data-theme="dark"] .bot-bubble tr:nth-child(even) td { background: #1e293b; }
+  [data-theme="dark"] .bot-bubble blockquote { color: #94a3b8; border-color: #60a5fa; }
+  [data-theme="dark"] .chatbot-input-area { border-color: #1e293b; background: #0f172a; }
+  [data-theme="dark"] .chatbot-input-area input { background: #1e293b; color: #e2e8f0; border-color: #334155; }
+  [data-theme="dark"] .chatbot-input-area input:focus { background: #1e293b; }
+  [data-theme="dark"] .chatbot-header-btn { color: #fff; }
+  [data-theme="dark"] .chatbot-msg-row .chatbot-avatar { background: #334155; }
+  [data-theme="dark"] .chatbot-msg-row.user-row .chatbot-avatar { background: #1e3a5f; }
 
   @media (max-width: 480px) {
-    .chatbot-container {
-      width: calc(100vw - 32px);
-      right: 16px;
-      bottom: 88px;
-    }
-    .chatbot-toggle {
-      right: 16px;
-      bottom: 16px;
-    }
+    .chatbot-container { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
+    .chatbot-toggle { right: 16px; bottom: 16px; }
   }
 </style>
 
@@ -338,65 +375,156 @@
   const toggle = document.getElementById('chatbot-toggle')!;
   const container = document.getElementById('chatbot-container')!;
   const closeBtn = document.getElementById('chatbot-close')!;
+  const fullscreenBtn = document.getElementById('chatbot-fullscreen')!;
   const form = document.getElementById('chatbot-form') as HTMLFormElement;
   const input = document.getElementById('chatbot-input') as HTMLInputElement;
   const messagesEl = document.getElementById('chatbot-messages')!;
 
   const conversationHistory: Array<{ role: string; content: string }> = [];
 
+  // Toggle chat open/close
   toggle.addEventListener('click', () => {
     container.classList.toggle('chatbot-hidden');
-    if (!container.classList.contains('chatbot-hidden')) {
-      input.focus();
-    }
+    if (!container.classList.contains('chatbot-hidden')) input.focus();
   });
-
   closeBtn.addEventListener('click', () => {
     container.classList.add('chatbot-hidden');
+    container.classList.remove('chatbot-fullscreen');
   });
 
-  // Convert markdown links [text](url) to <a> tags and newlines to <br>
+  // Fullscreen toggle
+  fullscreenBtn.addEventListener('click', () => {
+    container.classList.toggle('chatbot-fullscreen');
+    input.focus();
+  });
+
+  // ===== Markdown renderer =====
   function renderMarkdown(text: string): string {
-    // Sanitize HTML to prevent XSS
-    const escaped = text
+    // Escape HTML
+    let html = text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-    // Convert markdown links
-    const withLinks = escaped.replace(
+      .replace(/>/g, '&gt;');
+
+    // Code blocks: ```lang\ncode\n```
+    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, _lang, code) => {
+      return `<pre><code>${code.trim()}</code></pre>`;
+    });
+
+    // Inline code: `code`
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Tables: | h1 | h2 |\n|---|---|\n| c1 | c2 |
+    html = html.replace(
+      /((?:\|[^\n]+\|\n?){2,})/g,
+      (tableBlock) => {
+        const rows = tableBlock.trim().split('\n').filter(r => r.trim());
+        if (rows.length < 2) return tableBlock;
+        // Check for separator row
+        const sepIdx = rows.findIndex(r => /^\|[\s\-:|]+\|$/.test(r.trim()));
+        if (sepIdx < 0) return tableBlock;
+        const headerRows = rows.slice(0, sepIdx);
+        const bodyRows = rows.slice(sepIdx + 1);
+        const parseRow = (r: string) =>
+          r.split('|').slice(1, -1).map(c => c.trim());
+        let t = '<table>';
+        headerRows.forEach(r => {
+          t += '<thead><tr>' + parseRow(r).map(c => `<th>${c}</th>`).join('') + '</tr></thead>';
+        });
+        if (bodyRows.length) {
+          t += '<tbody>';
+          bodyRows.forEach(r => {
+            t += '<tr>' + parseRow(r).map(c => `<td>${c}</td>`).join('') + '</tr>';
+          });
+          t += '</tbody>';
+        }
+        t += '</table>';
+        return t;
+      }
+    );
+
+    // Headings: ### heading
+    html = html.replace(/^#{6}\s+(.+)$/gm, '<h6>$1</h6>');
+    html = html.replace(/^#{5}\s+(.+)$/gm, '<h5>$1</h5>');
+    html = html.replace(/^#{4}\s+(.+)$/gm, '<h4>$1</h4>');
+    html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
+
+    // Horizontal rule
+    html = html.replace(/^---$/gm, '<hr>');
+
+    // Blockquote
+    html = html.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // Unordered list items: * item or - item
+    html = html.replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+    // Ordered list items: 1. item
+    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+
+    // Bold + italic: ***text***
+    html = html.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+    // Bold: **text**
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Italic: *text*
+    html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+
+    // Links: [text](url) — only allow safe URLs
+    html = html.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
-      (_match, linkText, url) => {
-        // Only allow relative paths and https links
+      (_m, linkText, url) => {
         if (url.startsWith('/') || url.startsWith('https://')) {
-          return `<a href="${url}" target="${url.startsWith('https://') ? '_blank' : '_self'}" rel="noopener">${linkText}</a>`;
+          const target = url.startsWith('https://') ? '_blank' : '_self';
+          return `<a href="${url}" target="${target}" rel="noopener">${linkText}</a>`;
         }
         return linkText;
       }
     );
-    // Convert **bold**
-    const withBold = withLinks.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    // Convert newlines
-    return withBold.replace(/\n/g, '<br>');
+
+    // Paragraphs: convert remaining double newlines
+    html = html.replace(/\n{2,}/g, '</p><p>');
+    // Single newlines to <br> (but not inside block elements)
+    html = html.replace(/\n/g, '<br>');
+
+    // Clean up empty tags
+    html = html.replace(/<p><\/p>/g, '');
+    html = html.replace(/<br>(<\/?(?:h[1-6]|ul|ol|li|table|thead|tbody|tr|th|td|pre|blockquote|hr))/g, '$1');
+    html = html.replace(/(<\/(?:h[1-6]|ul|ol|li|table|thead|tbody|tr|th|td|pre|blockquote|hr)>)<br>/g, '$1');
+
+    return html;
+  }
+
+  // ===== Create message row =====
+  function createBotRow(): { row: HTMLElement; bubble: HTMLElement } {
+    const row = document.createElement('div');
+    row.className = 'chatbot-msg-row bot-row';
+    const avatar = document.createElement('span');
+    avatar.className = 'chatbot-avatar';
+    avatar.textContent = '🤖';
+    const bubble = document.createElement('div');
+    bubble.className = 'chatbot-bubble bot-bubble';
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return { row, bubble };
   }
 
   function appendMessage(text: string, sender: 'user' | 'bot') {
     const row = document.createElement('div');
     row.className = `chatbot-msg-row ${sender === 'bot' ? 'bot-row' : 'user-row'}`;
-
     const avatar = document.createElement('span');
     avatar.className = 'chatbot-avatar';
     avatar.textContent = sender === 'bot' ? '🤖' : '👤';
-
     const bubble = document.createElement('div');
     bubble.className = `chatbot-bubble ${sender === 'bot' ? 'bot-bubble' : 'user-bubble'}`;
-
     if (sender === 'bot') {
       bubble.innerHTML = renderMarkdown(text);
     } else {
       bubble.textContent = text;
     }
-
     row.appendChild(avatar);
     row.appendChild(bubble);
     messagesEl.appendChild(row);
@@ -407,15 +535,12 @@
     const row = document.createElement('div');
     row.className = 'chatbot-msg-row bot-row';
     row.id = 'typing-row';
-
     const avatar = document.createElement('span');
     avatar.className = 'chatbot-avatar';
     avatar.textContent = '🤖';
-
     const indicator = document.createElement('div');
     indicator.className = 'chatbot-bubble bot-bubble typing-indicator';
     indicator.innerHTML = '<span></span><span></span><span></span>';
-
     row.appendChild(avatar);
     row.appendChild(indicator);
     messagesEl.appendChild(row);
@@ -423,6 +548,7 @@
     return row;
   }
 
+  // ===== Streaming submit handler =====
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = input.value.trim();
@@ -430,7 +556,6 @@
 
     appendMessage(text, 'user');
     input.value = '';
-
     conversationHistory.push({ role: 'user', content: text });
 
     const sendBtn = form.querySelector('.chatbot-send') as HTMLButtonElement;
@@ -446,14 +571,50 @@
         body: JSON.stringify({ messages: conversationHistory }),
       });
 
-      const data = await res.json();
       typingRow.remove();
 
-      if (res.ok && data.reply) {
-        appendMessage(data.reply, 'bot');
-        conversationHistory.push({ role: 'assistant', content: data.reply });
-      } else {
-        appendMessage(data.error || 'Something went wrong. Please try again.', 'bot');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: 'Request failed' }));
+        appendMessage(errData.error || 'Something went wrong.', 'bot');
+        return;
+      }
+
+      // Stream the response
+      const { row: _botRow, bubble } = createBotRow();
+      let fullText = '';
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data: ')) continue;
+          const payload = trimmed.slice(6);
+          if (payload === '[DONE]') break;
+          try {
+            const data = JSON.parse(payload);
+            if (data.content) {
+              fullText += data.content;
+              bubble.innerHTML = renderMarkdown(fullText);
+              messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+            if (data.error) {
+              bubble.innerHTML = renderMarkdown(fullText + '\n\n⚠️ ' + data.error);
+            }
+          } catch { /* skip malformed chunks */ }
+        }
+      }
+
+      if (fullText) {
+        conversationHistory.push({ role: 'assistant', content: fullText });
       }
     } catch {
       typingRow.remove();
