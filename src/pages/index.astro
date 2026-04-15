@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import '../styles/global.css';
 import { getCollection } from 'astro:content';
 import { getHashnodeBlogs } from '../lib/hashnode';
@@ -9,6 +11,7 @@ import LeafEffect from '../components/LeafEffect.astro';
 import FestiveDecoration from '../components/FestiveDecoration.astro';
 import SeasonDecoration from '../components/SeasonDecoration.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import ChatBot from '../components/ChatBot.astro';
 
 const profile = await import('../data/profile.json');
 const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
@@ -129,5 +132,7 @@ const sortedProjects = allProjects.sort((a, b) =>
 			{profile.cv && <a href={profile.cv} target="_blank" rel="noopener">Download CV</a>}
 		</div>
 	</section>
+	<!-- Chatbot -->
+	<ChatBot />
 </body>
 </html>
