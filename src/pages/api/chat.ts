@@ -101,10 +101,11 @@ export const POST: APIRoute = async ({ request }) => {
   const projectsList = projects
     .map((p) => {
       const d = p.data;
+      const slug = p.id.replace(/\.md$/, '');
       const tags = d.tags ? d.tags.join(', ') : '';
       const company = d.company ? ` at ${d.company}` : '';
       const github = d.github ? ` | GitHub: ${d.github}` : '';
-      return `- [${d.title}](/projects/${p.id}) (${d.year || 'N/A'}${company}): ${d.description} | Tags: ${tags}${github}`;
+      return `- [${d.title}](/projects/${slug}) (${d.year || 'N/A'}${company}): ${d.description} | Tags: ${tags}${github}`;
     })
     .join('\n');
 
