@@ -10,6 +10,7 @@ import LeafEffect from '../../components/LeafEffect.astro';
 import FestiveDecoration from '../../components/FestiveDecoration.astro';
 import SeasonDecoration from '../../components/SeasonDecoration.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import ChatBot from '../../components/ChatBot.astro';
 
 const profile = await import('../../data/profile.json');
 const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
@@ -279,5 +280,6 @@ console.log('Companies:', companies);
 			}
 		});
 	</script>
+	<ChatBot />
 </body>
 </html>

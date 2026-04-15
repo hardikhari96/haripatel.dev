@@ -25,16 +25,22 @@
   },
   "experience": [
     {
-      "company": "Current Company",
+      "company": "Credify Technologies Pvt Ltd",
       "position": "DevOps Engineer",
       "period": "2023 - Present",
       "description": "Building and maintaining cloud infrastructure, implementing CI/CD pipelines, and optimizing system performance."
     },
     {
-      "company": "Previous Company",
+      "company": "Aarya Infoline",
       "position": "Backend Developer",
       "period": "2021 - 2023",
       "description": "Developed microservices, APIs, and backend systems. Worked with message queues and distributed systems."
+    },
+    {
+      "company": "Denim Softwares Pvt Ltd",
+      "position": "Backend Developer",
+      "period": "2018 - 2021",
+      "description": "Worked on backend development, building APIs and services for client projects."
     }
   ]
 }

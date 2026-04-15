@@ -10,6 +10,7 @@ import LeafEffect from '../../components/LeafEffect.astro';
 import FestiveDecoration from '../../components/FestiveDecoration.astro';
 import SeasonDecoration from '../../components/SeasonDecoration.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import ChatBot from '../../components/ChatBot.astro';
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection('projects');
@@ -78,6 +79,7 @@ const { festival: currentFestival, season: currentSeason, enableSnow, enableRain
 			</div>
 		)}
 	</article>
+	<ChatBot />
 </body>
 </html>
 

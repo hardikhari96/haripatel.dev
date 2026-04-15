@@ -382,23 +382,67 @@
   const input = document.getElementById('chatbot-input') as HTMLInputElement;
   const messagesEl = document.getElementById('chatbot-messages')!;
 
-  const conversationHistory: Array<{ role: string; content: string }> = [];
+  const STORAGE_KEY = 'chatbot_history';
+  const STATE_KEY = 'chatbot_state';
+
+  // Restore conversation history from sessionStorage
+  let conversationHistory: Array<{ role: string; content: string }> = [];
+  try {
+    const saved = sessionStorage.getItem(STORAGE_KEY);
+    if (saved) conversationHistory = JSON.parse(saved);
+  } catch { /* ignore */ }
+
+  function saveHistory() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(conversationHistory));
+    } catch { /* ignore */ }
+  }
+
+  function saveState() {
+    try {
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({
+        open: !container.classList.contains('chatbot-hidden'),
+        fullscreen: container.classList.contains('chatbot-fullscreen'),
+      }));
+    } catch { /* ignore */ }
+  }
 
   // Toggle chat open/close
   toggle.addEventListener('click', () => {
     container.classList.toggle('chatbot-hidden');
     if (!container.classList.contains('chatbot-hidden')) input.focus();
+    saveState();
   });
   closeBtn.addEventListener('click', () => {
     container.classList.add('chatbot-hidden');
     container.classList.remove('chatbot-fullscreen');
+    saveState();
   });
 
   // Fullscreen toggle
   fullscreenBtn.addEventListener('click', () => {
     container.classList.toggle('chatbot-fullscreen');
     input.focus();
+    saveState();
   });
+
+  // Restore previous messages and UI state on page load
+  (function restoreChat() {
+    // Restore open/fullscreen state
+    try {
+      const stateStr = sessionStorage.getItem(STATE_KEY);
+      if (stateStr) {
+        const state = JSON.parse(stateStr);
+        if (state.open) container.classList.remove('chatbot-hidden');
+        if (state.fullscreen) container.classList.add('chatbot-fullscreen');
+      }
+    } catch { /* ignore */ }
+    // Restore message bubbles
+    for (const msg of conversationHistory) {
+      if (msg.role === 'user') appendMessage(msg.content, 'user');
+      else if (msg.role === 'assistant') appendMessage(msg.content, 'bot');
+    }
+  })();
 
   // ===== Markdown renderer =====
   function renderMarkdown(text: string): string {
@@ -485,7 +529,7 @@
       /\[([^\]]+)\]\(([^)]+)\)/g,
       (_m, linkText, url) => {
         if (url.startsWith('/') || url.startsWith('https://')) {
-          const target = url.startsWith('https://') ? '_blank' : '_self';
+          const target = '_blank';
           return `<a href="${url}" target="${target}" rel="noopener">${linkText}</a>`;
         }
         return linkText;
@@ -566,6 +610,7 @@
     appendMessage(text, 'user');
     input.value = '';
     conversationHistory.push({ role: 'user', content: text });
+    saveHistory();
 
     const sendBtn = form.querySelector('.chatbot-send') as HTMLButtonElement;
     sendBtn.disabled = true;
@@ -624,6 +669,7 @@
 
       if (fullText) {
         conversationHistory.push({ role: 'assistant', content: fullText });
+        saveHistory();
       }
     } catch {
       typingRow.remove();

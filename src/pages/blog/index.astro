@@ -10,6 +10,7 @@ import LeafEffect from '../../components/LeafEffect.astro';
 import FestiveDecoration from '../../components/FestiveDecoration.astro';
 import SeasonDecoration from '../../components/SeasonDecoration.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import ChatBot from '../../components/ChatBot.astro';
 
 const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 
@@ -118,6 +119,7 @@ const series = Object.keys(blogsBySeries).sort();
 			});
 		});
 	</script>
+	<ChatBot />
 </body>
 </html>
 
