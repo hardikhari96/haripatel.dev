@@ -228,8 +228,10 @@
   .bot-bubble h3 { font-size: 1rem; }
   .bot-bubble h4, .bot-bubble h5, .bot-bubble h6 { font-size: 0.92rem; }
   .bot-bubble p { margin: 4px 0; }
-  .bot-bubble ul, .bot-bubble ol { margin: 4px 0; padding-left: 20px; }
-  .bot-bubble li { margin: 2px 0; }
+  .bot-bubble ul, .bot-bubble ol { margin: 6px 0; padding-left: 22px; }
+  .bot-bubble ul { list-style-type: disc; }
+  .bot-bubble ol { list-style-type: decimal; }
+  .bot-bubble li { margin: 3px 0; padding-left: 2px; }
   .bot-bubble a {
     color: #0066cc;
     text-decoration: underline;
@@ -457,19 +459,26 @@
     // Blockquote
     html = html.replace(/^&gt;\s+(.+)$/gm, '<blockquote>$1</blockquote>');
 
-    // Unordered list items: * item or - item
-    html = html.replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>');
-    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+    // Bold + italic BEFORE list parsing (so **text** isn't caught by * list rule)
+    html = html.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    // Unordered list items: - item (only dash to avoid conflict with italic *)
+    html = html.replace(/^-\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/((?:<li>(?:(?!<\/li>)[\s\S])*<\/li>\s*)+)/g, (match) => {
+      // If not already wrapped, wrap in <ul>
+      if (!match.includes('<ol>') && !match.includes('<ul>')) return '<ul>' + match + '</ul>';
+      return match;
+    });
 
     // Ordered list items: 1. item
-    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/^(\d+)\.\s+(.+)$/gm, '<oli>$2</oli>');
+    html = html.replace(/((?:<oli>(?:(?!<\/oli>)[\s\S])*<\/oli>\s*)+)/g, (match) => {
+      return '<ol>' + match.replace(/<oli>/g, '<li>').replace(/<\/oli>/g, '</li>') + '</ol>';
+    });
 
-    // Bold + italic: ***text***
-    html = html.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
-    // Bold: **text**
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    // Italic: *text*
-    html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+    // Italic: *text* (after list parsing)
+    html = html.replace(/(?<!\w)\*([^*]+)\*(?!\w)/g, '<em>$1</em>');
 
     // Links: [text](url) — only allow safe URLs
     html = html.replace(
