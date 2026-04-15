@@ -51,6 +51,25 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
+  const allowedRoles = new Set(['user', 'assistant']);
+  const validatedMessages = userMessages
+    .filter(
+      (msg): msg is { role: string; content: string } =>
+        typeof msg === 'object' &&
+        msg !== null &&
+        typeof msg.role === 'string' &&
+        allowedRoles.has(msg.role) &&
+        typeof msg.content === 'string'
+    )
+    .map((msg) => ({ role: msg.role, content: msg.content }));
+
+  if (validatedMessages.length === 0) {
+    return new Response(
+      JSON.stringify({ error: 'At least one valid message is required' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
   const openai = new OpenAI({
     apiKey,
     baseURL: 'https://integrate.api.nvidia.com/v1',
@@ -61,11 +80,11 @@ export const POST: APIRoute = async ({ request }) => {
       model: 'minimaxai/minimax-m2.7',
       messages: [
         { role: 'system', content: systemPrompt },
-        ...userMessages,
+        ...validatedMessages,
       ],
-      temperature: 1,
+      temperature: 0.4,
       top_p: 0.95,
-      max_tokens: 1024,
+      max_tokens: 512,
     });
 
     const reply = completion.choices[0]?.message?.content ?? '';
