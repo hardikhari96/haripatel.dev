@@ -1,7 +1,7 @@
 ---
 title: "Badinto - Real-time Badminton Tournament Scoring System"
 description: "Multi-court tournament management platform with live scoring, LED display integration, and automated certificate generation at Aarya Infoline"
-year: 2024
+year: 2021
 company: "Aarya Infoline"
 tags: ["Node.js", "Angular", "MySQL", "Socket.io", "Android", "Ubuntu", "Nginx", "Real-time"]
 category: "company"

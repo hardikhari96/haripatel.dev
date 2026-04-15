@@ -1,7 +1,7 @@
 ---
 title: "Aashirwad - Insurance Management Platform"
 description: "Full-stack insurance application system with multi-product support, agent management, and hospital LMS integration at Aarya Infoline"
-year: 2024
+year: 2021
 company: "Aarya Infoline"
 tags: ["Node.js", "Angular", "MySQL", "Android", "Java", "CentOS", "Insurance Tech"]
 category: "company"

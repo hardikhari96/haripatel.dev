@@ -19,20 +19,5 @@
       "year": "2023"
     }
   ],
-  "company": [
-    {
-      "title": "Enterprise Dashboard",
-      "description": "Real-time analytics dashboard serving 10k+ daily users. Built with React and TypeScript.",
-      "link": "https://company.com/product",
-      "company": "TechCorp",
-      "year": "2024"
-    },
-    {
-      "title": "API Gateway",
-      "description": "Microservices gateway handling 1M+ requests daily. Go + Redis.",
-      "link": null,
-      "company": "StartupXYZ",
-      "year": "2023"
-    }
-  ]
+  "company": []
 }
