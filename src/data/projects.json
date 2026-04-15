@@ -1,23 +1,4 @@
 {
-  "personal": [
-    {
-      "title": "Project Alpha",
-      "description": "A minimal task manager built with vanilla JavaScript. Focus on speed and simplicity.",
-      "link": "https://github.com/yourusername/project-alpha",
-      "year": "2024"
-    },
-    {
-      "title": "CLI Tool",
-      "description": "Command-line utility for automating repetitive development tasks.",
-      "link": "https://github.com/yourusername/cli-tool",
-      "year": "2023"
-    },
-    {
-      "title": "Static Site Generator",
-      "description": "Lightweight SSG written in Python for personal blogs.",
-      "link": "https://github.com/yourusername/ssg",
-      "year": "2023"
-    }
-  ],
+  "personal": [],
   "company": []
 }
