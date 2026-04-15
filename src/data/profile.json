@@ -16,12 +16,13 @@
     "I specialize in backend and frontend development, along with system architecture. I also work with DevOps practices to streamline development and deployment workflows. I enjoy building scalable systems and working with modern technologies to create reliable, high-performance applications."
   ],
   "skills": {
-    "languages": ["Python", "Go", "JavaScript", "TypeScript", "Bash"],
-    "devops": ["Docker", "Kubernetes", "NGINX", "CI/CD", "Terraform"],
-    "cloud": ["AWS", "GCP", "Azure"],
-    "backend": ["Node.js", "FastAPI", "Express", "RabbitMQ", "Redis"],
-    "databases": ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
-    "tools": ["Git", "Linux", "Ansible", "Jenkins"]
+    "languages": ["Python", "Go", "JavaScript", "TypeScript", "Bash", "HTML", "CSS", "PHP"],
+    "frontend": ["Angular", "Responsive Design"],
+    "devops": ["Docker", "Kubernetes", "NGINX", "Apache", "CI/CD", "Terraform", "GitLab", "Bitbucket"],
+    "cloud": ["AWS", "GCP", "Azure", "DigitalOcean", "Oracle Cloud"],
+    "backend": ["Node.js", "FastAPI", "Express", "RabbitMQ", "Redis", "OAuth", "JWT", "Elastic Search"],
+    "databases": ["PostgreSQL", "MongoDB", "MySQL", "Redis", "SQL", "NoSQL"],
+    "tools": ["Git", "Linux", "Ansible", "Jenkins", "WordPress", "Bootstrap"]
   },
   "experience": [
     {
