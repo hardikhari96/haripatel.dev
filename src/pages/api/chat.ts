@@ -1,8 +1,13 @@
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 import OpenAI from 'openai';
 import profile from '../../data/profile.json';
+import projectsData from '../../data/projects.json';
 
-const systemPrompt = `You are a helpful assistant on Harikrushna Patel's personal website. Your job is to answer questions about Harikrushna's profile, skills, and experience in a friendly and concise way.
+function buildSystemPrompt(projectsList: string) {
+  return `You are a helpful assistant on Harikrushna Patel's personal website. Your job is to answer questions about Harikrushna's profile, skills, experience, and projects in a friendly and concise way.
+
+IMPORTANT: When mentioning any project, page, or resource, ALWAYS include the relevant link in markdown format like [Project Name](/projects/slug) so the user can click through. When mentioning the blog, link to [Blog](/blog). When mentioning the projects page, link to [Projects](/projects).
 
 Here is Harikrushna's profile information:
 - Name: ${profile.name}
@@ -22,7 +27,22 @@ ${profile.experience.map((exp) => `  - ${exp.position} at ${exp.company} (${exp.
 - LinkedIn: ${profile.linkedin}
 - Blog: ${profile.blog}
 
-Keep your responses brief and relevant. If someone asks something unrelated to Harikrushna's profile, politely redirect them to ask about his skills, experience, or projects.`;
+Here are Harikrushna's detailed projects (from content collection):
+${projectsList}
+
+Here are additional projects (from data):
+Personal Projects:
+${projectsData.personal.map((p) => `- ${p.title} (${p.year}): ${p.description}${p.link ? ` | Link: ${p.link}` : ''}`).join('\n')}
+Company Projects:
+${projectsData.company.map((p) => `- ${p.title} at ${p.company} (${p.year}): ${p.description}${p.link ? ` | Link: ${p.link}` : ''}`).join('\n')}
+
+Site pages:
+- Home: /
+- Projects: /projects
+- Blog: /blog
+
+Keep your responses brief and relevant. Always include clickable markdown links when referring to projects or pages. If someone asks something unrelated to Harikrushna's profile, politely redirect them to ask about his skills, experience, or projects.`;
+}
 
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = import.meta.env.NVIDIA_API_KEY;
@@ -61,7 +81,7 @@ export const POST: APIRoute = async ({ request }) => {
         allowedRoles.has(msg.role) &&
         typeof msg.content === 'string'
     )
-    .map((msg) => ({ role: msg.role, content: msg.content }));
+    .map((msg) => ({ role: msg.role as 'user' | 'assistant', content: msg.content }));
 
   if (validatedMessages.length === 0) {
     return new Response(
@@ -73,11 +93,26 @@ export const POST: APIRoute = async ({ request }) => {
   const openai = new OpenAI({
     apiKey,
     baseURL: 'https://integrate.api.nvidia.com/v1',
+    timeout: 15000,
   });
+
+  // Dynamically load all projects from content collection
+  const projects = await getCollection('projects');
+  const projectsList = projects
+    .map((p) => {
+      const d = p.data;
+      const tags = d.tags ? d.tags.join(', ') : '';
+      const company = d.company ? ` at ${d.company}` : '';
+      const github = d.github ? ` | GitHub: ${d.github}` : '';
+      return `- [${d.title}](/projects/${p.id}) (${d.year || 'N/A'}${company}): ${d.description} | Tags: ${tags}${github}`;
+    })
+    .join('\n');
+
+  const systemPrompt = buildSystemPrompt(projectsList);
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'minimaxai/minimax-m2.7',
+      model: 'meta/llama-3.1-8b-instruct',
       messages: [
         { role: 'system', content: systemPrompt },
         ...validatedMessages,
