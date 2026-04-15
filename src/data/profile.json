@@ -26,21 +26,40 @@
   "experience": [
     {
       "company": "Credify Technologies Pvt Ltd",
-      "position": "DevOps Engineer",
-      "period": "2023 - Present",
-      "description": "Building and maintaining cloud infrastructure, implementing CI/CD pipelines, and optimizing system performance."
+      "position": "Sr. Full Stack Developer",
+      "period": "2022 - Present",
+      "description": "Participate in key decision-making processes, sharing insights and suggestions for product enhancements and strategic direction. Previously worked as Full Stack Developer managing project development, feature implementation, bug fixing, and codebase maintenance."
     },
     {
       "company": "Aarya Infoline",
       "position": "Backend Developer",
-      "period": "2021 - 2023",
-      "description": "Developed microservices, APIs, and backend systems. Worked with message queues and distributed systems."
+      "period": "2020 - 2022",
+      "description": "Designed and optimized database structures, ensuring scalability and data integrity. Managing Backend at this proprietor software company."
     },
     {
       "company": "Denim Softwares Pvt Ltd",
-      "position": "Backend Developer",
-      "period": "2018 - 2021",
-      "description": "Worked on backend development, building APIs and services for client projects."
+      "position": "Developer",
+      "period": "2019 - 2020",
+      "description": "Contributed to developing and maintaining core applications using PHP, Bootstrap, WordPress, and CSS, while managing server environments, debugging, and ensuring smooth deployments."
+    }
+  ],
+  "education": [
+    {
+      "institution": "Sardar Patel University",
+      "degree": "Bachelor of Science in Physics",
+      "period": "2017 - 2019"
+    }
+  ],
+  "certificates": [
+    {
+      "name": "Software Development and Application",
+      "issuer": "Information Technology Centre",
+      "year": "2020"
+    },
+    {
+      "name": "Neo4j Cypher Fundamentals",
+      "issuer": "neo4j | Graph Academy",
+      "year": "2023"
     }
   ]
 }

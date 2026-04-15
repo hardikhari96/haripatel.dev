@@ -28,7 +28,9 @@ export const POST: APIRoute = async ({ request }) => {
     const docs: VectorDoc[] = [];
 
     // 1. Profile document
-    const profileText = `Harikrushna Patel - ${profile.tagline}. ${profile.about.join(' ')} Skills: Languages: ${profile.skills.languages.join(', ')}. DevOps: ${profile.skills.devops.join(', ')}. Cloud: ${profile.skills.cloud.join(', ')}. Backend: ${profile.skills.backend.join(', ')}. Databases: ${profile.skills.databases.join(', ')}. Tools: ${profile.skills.tools.join(', ')}. Experience: ${profile.experience.map((e) => `${e.position} at ${e.company} (${e.period}): ${e.description}`).join('. ')}. Email: ${profile.email}. Website: ${profile.website}. GitHub: ${profile.github}. LinkedIn: ${profile.linkedin}. Twitter: ${profile.twitter}. Medium: ${profile.medium}. Blog: ${profile.blog}. CV/Resume: ${profile.cv}.`;
+    const educationText = (profile as any).education ? (profile as any).education.map((e: any) => `${e.degree} from ${e.institution} (${e.period})`).join('. ') : '';
+    const certificatesText = (profile as any).certificates ? (profile as any).certificates.map((c: any) => `${c.name} from ${c.issuer} (${c.year})`).join('. ') : '';
+    const profileText = `Harikrushna Patel - ${profile.tagline}. ${profile.about.join(' ')} Skills: Languages: ${profile.skills.languages.join(', ')}. DevOps: ${profile.skills.devops.join(', ')}. Cloud: ${profile.skills.cloud.join(', ')}. Backend: ${profile.skills.backend.join(', ')}. Databases: ${profile.skills.databases.join(', ')}. Tools: ${profile.skills.tools.join(', ')}. Experience: ${profile.experience.map((e) => `${e.position} at ${e.company} (${e.period}): ${e.description}`).join('. ')}.${educationText ? ` Education: ${educationText}.` : ''}${certificatesText ? ` Certificates: ${certificatesText}.` : ''} Email: ${profile.email}. Website: ${profile.website}. GitHub: ${profile.github}. LinkedIn: ${profile.linkedin}. Twitter: ${profile.twitter}. Medium: ${profile.medium}. Blog: ${profile.blog}. CV/Resume: ${profile.cv}.`;
 
     docs.push({
       id: 'profile',
