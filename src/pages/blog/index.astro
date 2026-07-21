@@ -1,56 +1,19 @@
 ---
 export const prerender = true;
 
-import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
 import { getHashnodeBlogs, groupBlogsBySeries } from '../../lib/hashnode';
-import { getCurrentTheme } from '../../lib/theme';
-import SnowEffect from '../../components/SnowEffect.astro';
-import RainEffect from '../../components/RainEffect.astro';
-import LeafEffect from '../../components/LeafEffect.astro';
-import FestiveDecoration from '../../components/FestiveDecoration.astro';
-import SeasonDecoration from '../../components/SeasonDecoration.astro';
-import ThemeToggle from '../../components/ThemeToggle.astro';
-import ChatBot from '../../components/ChatBot.astro';
-
-const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 
 const hashnodeBlogs = await getHashnodeBlogs(50);
 const blogsBySeries = groupBlogsBySeries(hashnodeBlogs);
 const series = Object.keys(blogsBySeries).sort();
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="/fevicon.png" />
-	<meta name="viewport" content="width=device-width" />
-	<meta name="generator" content={Astro.generator} />
-	<meta name="robots" content="noindex, nofollow" />
-	<meta name="description" content="Blog posts and articles" />
-	<title>Blog - Hari Patel</title>
-	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
-</head>
-<body>
-	<SeasonDecoration season={currentSeason} />
-	{enableSnow && <SnowEffect />}
-	{enableRain && <RainEffect />}
-	{enableLeaves && <LeafEffect season={currentSeason} />}
-	<!-- <ThemeToggle /> -->
-	<header>
-		<div class="header-content">
-			<h1>Harikrushna Patel<FestiveDecoration festival={currentFestival} /></h1>
-			<nav class="nav">
-				<a href="/">Home</a>
-				<a href="/projects">Projects</a>
-				<a href="/blog" class="active">Blog</a>
-			</nav>
-		</div>
-		<p class="tagline">Articles and thoughts on software development</p>
-	</header>
-
+<Layout title="Blog - Hari Patel" description="Blog posts and articles" active="blog">
 	<section class="section">
-		<!-- Series Filter -->
+		<h1 class="section-title" style="font-size: 1.8rem; margin-top: 2rem;">Writing</h1>
+		<p class="tagline-muted" style="margin-bottom: 2rem;">Articles and thoughts on software development</p>
+
 		<div class="filter-buttons">
 			<button class="filter-btn active" data-category="all">All Posts ({hashnodeBlogs.length})</button>
 			{series.map((seriesName) => (
@@ -60,35 +23,27 @@ const series = Object.keys(blogsBySeries).sort();
 			))}
 		</div>
 
-		<div class="blog-list">
+		<div class="card-grid">
 			{hashnodeBlogs.map((post) => (
-				<article class="blog-item" data-series={post.series?.name || 'Uncategorized'}>
-					<div class="blog-header">
-						<h3>
-							<a href={post.url} target="_blank" rel="noopener noreferrer">{post.title}</a>
-						</h3>
-						{post.series && (
-							<span class="series-label">[{post.series.name}]</span>
-						)}
-					</div>
-					<p class="blog-meta">
+				<article class="card blog-item" data-series={post.series?.name || 'Uncategorized'}>
+					<h3><a href={post.url} target="_blank" rel="noopener noreferrer">{post.title}</a></h3>
+					<p class="card-meta">
 						{new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-						{post.readTimeInMinutes && <span> · {post.readTimeInMinutes} min read</span>}
+						{post.readTimeInMinutes && ` · ${post.readTimeInMinutes} min read`}
+						{post.series && ` · ${post.series.name}`}
 					</p>
-					<p class="blog-description">{post.brief}</p>
+					<p>{post.brief}</p>
 					{post.tags && post.tags.length > 0 && (
-						<div class="blog-tags">
-							{post.tags.map((tag) => (
-								<span class="tag">{tag.name}</span>
-							))}
+						<div class="chip-row">
+							{post.tags.slice(0, 4).map((tag) => <span class="chip">{tag.name}</span>)}
 						</div>
 					)}
 				</article>
 			))}
 		</div>
 
-		<p style="margin-top: 2rem; text-align: center;">
-			<a href="https://blogs.haripatel.dev/" target="_blank" rel="noopener noreferrer">
+		<p style="margin-top: 2.5rem; text-align: center;">
+			<a href="https://blogs.haripatel.dev/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
 				Visit full blog site →
 			</a>
 		</p>
@@ -101,173 +56,17 @@ const series = Object.keys(blogsBySeries).sort();
 		categoryButtons.forEach(button => {
 			button.addEventListener('click', () => {
 				const selectedCategory = button.getAttribute('data-category');
-
-				// Update active button
 				categoryButtons.forEach(btn => btn.classList.remove('active'));
 				button.classList.add('active');
-
-				// Show/hide blog items based on series
 				blogItems.forEach(item => {
 					const itemSeries = item.getAttribute('data-series') || 'Uncategorized';
-					
 					if (selectedCategory === 'all') {
-						item.style.display = 'block';
+						item.style.display = '';
 					} else if (selectedCategory) {
-						item.style.display = itemSeries === selectedCategory ? 'block' : 'none';
+						item.style.display = itemSeries === selectedCategory ? '' : 'none';
 					}
 				});
 			});
 		});
 	</script>
-	<ChatBot />
-</body>
-</html>
-
-<style>
-	.header-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 0.5rem;
-		flex-wrap: wrap;
-		gap: 1rem;
-	}
-
-	.nav {
-		display: flex;
-		gap: 1.5rem;
-	}
-
-	.nav a {
-		color: #666;
-		text-decoration: none;
-		font-size: 0.95rem;
-		transition: color 0.2s;
-	}
-
-	.nav a:hover,
-	.nav a.active {
-		color: #0066cc;
-	}
-
-	.filter-buttons {
-		display: flex;
-		gap: 1rem;
-		margin-bottom: 2rem;
-		flex-wrap: wrap;
-	}
-
-	.filter-btn {
-		padding: 0.5rem 1rem;
-		background: #fff;
-		border: 1px solid #000;
-		color: #000;
-		cursor: pointer;
-		font-size: 0.95rem;
-		font-family: inherit;
-		transition: all 0.2s;
-	}
-
-	.filter-btn:hover {
-		background: #000;
-		color: #fff;
-	}
-
-	.filter-btn.active {
-		background: #000;
-		color: #fff;
-	}
-
-	.blog-list {
-		margin-top: 2rem;
-	}
-
-	.blog-item {
-		margin-bottom: 2.5rem;
-		padding-bottom: 2.5rem;
-		border-bottom: 1px solid #ddd;
-	}
-
-	.blog-item:last-child {
-		border-bottom: none;
-	}
-
-	.blog-header {
-		display: flex;
-		align-items: baseline;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-		margin-bottom: 0.5rem;
-	}
-
-	.blog-item h3 {
-		margin: 0;
-		font-size: 1.2rem;
-		font-weight: 600;
-	}
-
-	.blog-item h3 a {
-		color: #000;
-		text-decoration: none;
-	}
-
-	.blog-item h3 a:hover {
-		color: #0066cc;
-	}
-
-	.series-label {
-		font-size: 0.85rem;
-		color: #666;
-		font-weight: normal;
-	}
-
-	.blog-meta {
-		color: #666;
-		font-size: 0.9rem;
-		margin-bottom: 0.75rem;
-	}
-
-	.blog-description {
-		color: #333;
-		line-height: 1.6;
-		margin-bottom: 0.75rem;
-	}
-
-	.blog-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.tag {
-		display: inline-block;
-		background: #f0f0f0;
-		padding: 0.25rem 0.75rem;
-		font-size: 0.85rem;
-		color: #333;
-	}
-
-	@media (max-width: 768px) {
-		.header-content {
-			gap: 0.5rem;
-		}
-
-		.nav {
-			gap: 1rem;
-		}
-
-		.blog-item {
-			margin-bottom: 2rem;
-			padding-bottom: 2rem;
-		}
-
-		.blog-item h3 {
-			font-size: 1.1rem;
-		}
-
-		.filter-btn {
-			font-size: 0.85rem;
-			padding: 0.4rem 0.8rem;
-		}
-	}
-</style>
+</Layout>
