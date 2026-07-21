@@ -8,6 +8,7 @@ import {
   TOOLS_SYSTEM_PROMPT,
   type ToolCall,
 } from '../../lib/chat-tools';
+import { resolveModel } from '../../lib/models';
 
 function buildSystemPrompt(context: string) {
   return `You are a helpful assistant on Harikrushna Patel's personal website. Your job is to answer questions about Harikrushna's profile, skills, experience, and projects in a friendly and concise way.
@@ -35,7 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  let body: { messages?: unknown };
+  let body: { messages?: unknown; model?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -124,9 +125,15 @@ export const POST: APIRoute = async ({ request }) => {
 
   const systemPrompt = buildSystemPrompt(context);
 
+  // The visitor may choose a model, but only from the server-side allowlist of
+  // free, tool-capable models. Anything else falls back to the configured
+  // default (env override if it is itself allow-listed, else the built-in default).
+  const envDefault = import.meta.env.OPENROUTER_MODEL;
+  const chosenModel = resolveModel(body.model, typeof envDefault === 'string' ? envDefault : undefined);
+
   try {
     const stream = await openai.chat.completions.create({
-      model: import.meta.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct',
+      model: chosenModel,
       messages: [
         { role: 'system', content: systemPrompt },
         ...validatedMessages,

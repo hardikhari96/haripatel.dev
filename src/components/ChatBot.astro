@@ -26,6 +26,14 @@
       <button id="chatbot-close" class="chatbot-header-btn" title="Close chat">&times;</button>
     </div>
   </div>
+  <div class="chatbot-modelbar">
+    <button id="chatbot-model-btn" class="chatbot-model-btn" type="button" aria-haspopup="listbox" aria-expanded="false" title="Choose the AI model">
+      <span class="chatbot-model-dot"></span>
+      <span id="chatbot-model-label" class="chatbot-model-label">Model</span>
+      <svg class="chatbot-model-chevron" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div id="chatbot-model-menu" class="chatbot-model-menu chatbot-hidden" role="listbox"></div>
+  </div>
   <div id="chatbot-messages" class="chatbot-messages">
     <div class="chatbot-msg-row bot-row">
       <span class="chatbot-avatar">🤖</span>
@@ -146,6 +154,89 @@
     transition: background 0.2s;
   }
   .chatbot-header-btn:hover { background: rgba(255,255,255,0.35); }
+
+  /* Model picker bar */
+  .chatbot-modelbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .chatbot-model-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.15s;
+    max-width: 100%;
+  }
+  .chatbot-model-btn:hover { background: #e2e8f0; }
+  .chatbot-model-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chatbot-model-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .chatbot-model-chevron { transition: transform 0.2s; flex-shrink: 0; }
+  .chatbot-model-btn[aria-expanded="true"] .chatbot-model-chevron { transform: rotate(180deg); }
+
+  .chatbot-model-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 12px;
+    right: 12px;
+    z-index: 20;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 6px;
+  }
+  .chatbot-model-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .chatbot-model-option:hover { background: #f1f5f9; }
+  .chatbot-model-option.selected { background: #e0edff; }
+  .chatbot-model-option .opt-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .chatbot-model-option .opt-ctx {
+    font-size: 0.64rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 1px 6px;
+    flex-shrink: 0;
+  }
+  .chatbot-model-option.selected .opt-ctx { background: #fff; }
+  .chatbot-model-option .opt-blurb {
+    margin-top: 3px;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: #64748b;
+  }
 
   /* Messages area */
   .chatbot-messages {
@@ -388,6 +479,16 @@
 
   /* ===== Dark theme ===== */
   [data-theme="dark"] .chatbot-container { background: #0f172a; border-color: #1e293b; }
+  [data-theme="dark"] .chatbot-modelbar { background: #0f172a; border-color: #1e293b; }
+  [data-theme="dark"] .chatbot-model-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+  [data-theme="dark"] .chatbot-model-btn:hover { background: #334155; }
+  [data-theme="dark"] .chatbot-model-menu { background: #1e293b; border-color: #334155; }
+  [data-theme="dark"] .chatbot-model-option:hover { background: #334155; }
+  [data-theme="dark"] .chatbot-model-option.selected { background: #1e3a5f; }
+  [data-theme="dark"] .chatbot-model-option .opt-label { color: #e2e8f0; }
+  [data-theme="dark"] .chatbot-model-option .opt-ctx { background: #334155; color: #94a3b8; }
+  [data-theme="dark"] .chatbot-model-option.selected .opt-ctx { background: #0f172a; }
+  [data-theme="dark"] .chatbot-model-option .opt-blurb { color: #94a3b8; }
   [data-theme="dark"] .chatbot-messages { background: #0f172a; }
   [data-theme="dark"] .chatbot-msg-row .bot-bubble {
     background: #1e293b; color: #e2e8f0; border-color: #334155;
@@ -414,6 +515,8 @@
 </style>
 
 <script>
+  import { AVAILABLE_MODELS, DEFAULT_MODEL } from '../lib/models';
+
   const toggle = document.getElementById('chatbot-toggle')!;
   const container = document.getElementById('chatbot-container')!;
   const closeBtn = document.getElementById('chatbot-close')!;
@@ -421,9 +524,84 @@
   const form = document.getElementById('chatbot-form') as HTMLFormElement;
   const input = document.getElementById('chatbot-input') as HTMLInputElement;
   const messagesEl = document.getElementById('chatbot-messages')!;
+  const modelBtn = document.getElementById('chatbot-model-btn')!;
+  const modelLabel = document.getElementById('chatbot-model-label')!;
+  const modelMenu = document.getElementById('chatbot-model-menu')!;
 
   const STORAGE_KEY = 'chatbot_history';
   const STATE_KEY = 'chatbot_state';
+  const MODEL_KEY = 'chatbot_model';
+
+  // ===== Model picker =====
+  // Persisted choice, validated against the allowlist we share with the server.
+  let selectedModel = (() => {
+    try {
+      const saved = localStorage.getItem(MODEL_KEY);
+      if (saved && AVAILABLE_MODELS.some((m) => m.id === saved)) return saved;
+    } catch { /* ignore */ }
+    return DEFAULT_MODEL;
+  })();
+
+  function currentModelLabel(): string {
+    return AVAILABLE_MODELS.find((m) => m.id === selectedModel)?.label ?? 'Model';
+  }
+
+  function closeModelMenu() {
+    modelMenu.classList.add('chatbot-hidden');
+    modelBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function renderModelMenu() {
+    modelMenu.innerHTML = '';
+    for (const m of AVAILABLE_MODELS) {
+      const opt = document.createElement('button');
+      opt.type = 'button';
+      opt.setAttribute('role', 'option');
+      opt.className = 'chatbot-model-option' + (m.id === selectedModel ? ' selected' : '');
+      opt.setAttribute('aria-selected', String(m.id === selectedModel));
+      // Text comes from our own constant list, so it is safe to build as markup.
+      const label = document.createElement('span');
+      label.className = 'opt-label';
+      label.textContent = m.label;
+      const ctx = document.createElement('span');
+      ctx.className = 'opt-ctx';
+      ctx.textContent = m.context;
+      label.appendChild(ctx);
+      const blurb = document.createElement('span');
+      blurb.className = 'opt-blurb';
+      blurb.textContent = m.blurb;
+      opt.appendChild(label);
+      opt.appendChild(blurb);
+      opt.addEventListener('click', () => {
+        selectedModel = m.id;
+        try { localStorage.setItem(MODEL_KEY, m.id); } catch { /* ignore */ }
+        modelLabel.textContent = m.label;
+        closeModelMenu();
+        renderModelMenu();
+      });
+      modelMenu.appendChild(opt);
+    }
+  }
+
+  modelBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (modelMenu.classList.contains('chatbot-hidden')) {
+      modelMenu.classList.remove('chatbot-hidden');
+      modelBtn.setAttribute('aria-expanded', 'true');
+    } else {
+      closeModelMenu();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    if (!modelMenu.classList.contains('chatbot-hidden') &&
+        !modelMenu.contains(target) && !modelBtn.contains(target)) {
+      closeModelMenu();
+    }
+  });
+
+  modelLabel.textContent = currentModelLabel();
+  renderModelMenu();
 
   type HistoryMessage = {
     role: string;
@@ -1046,7 +1224,7 @@
       res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory }),
+        body: JSON.stringify({ messages: conversationHistory, model: selectedModel }),
       });
     } finally {
       typingRow.remove();
