@@ -19,7 +19,7 @@ Personal portfolio website for **Harikrushna Patel** — Full Stack Developer. B
 |---|---|
 | Framework | Astro v5.x (SSR mode, `output: 'server'`) |
 | Adapter | `@astrojs/vercel` — serverless deployment on Vercel |
-| LLM | NVIDIA API (`meta/llama-3.1-8b-instruct`) via OpenAI SDK |
+| LLM | OpenRouter (`meta-llama/llama-3.3-70b-instruct` default, `OPENROUTER_MODEL` override) via OpenAI SDK |
 | Vector DB | Upstash Vector (BGE_LARGE_EN_V1_5 embeddings, COSINE, HYBRID) |
 | Styling | Vanilla CSS with `<style is:global>` for dynamic elements |
 | Content | Astro Content Collections (Markdown) |
@@ -58,7 +58,8 @@ src/
 │   │   ├── index.astro        # Project gallery (grouped: personal / company)
 │   │   └── [slug].astro       # Individual project detail page
 │   └── api/
-│       ├── chat.ts            # POST: streaming SSE chat with RAG context
+│       ├── chat.ts            # POST: streaming SSE chat with RAG context + browser tool calls
+│       ├── ip.ts              # GET: visitor's public IP + geo (Vercel headers, first-party)
 │       └── seed.ts            # POST: seed vector DB | GET: check if seeded
 │
 ├── styles/
@@ -120,7 +121,8 @@ src/
 
 | Variable | Purpose |
 |---|---|
-| `NVIDIA_API_KEY` | NVIDIA API key for LLM (meta/llama-3.1-8b-instruct) |
+| `OPENROUTER_API_KEY` | OpenRouter API key for the chatbot LLM |
+| `OPENROUTER_MODEL` | Optional model override (default `meta-llama/llama-3.3-70b-instruct`; must support tool calling) |
 | `UPSTASH_VECTOR_REST_URL` | Upstash Vector DB endpoint |
 | `UPSTASH_VECTOR_REST_TOKEN` | Upstash Vector read/write token |
 | `UPSTASH_VECTOR_REST_READONLY_TOKEN` | Upstash Vector read-only token |

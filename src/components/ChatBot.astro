@@ -659,6 +659,20 @@
   // ===== Browser tools (executed on the visitor's device) =====
   const browserTools: Record<string, () => Promise<Record<string, unknown>>> = {
     async get_public_ip() {
+      // First-party lookup: our own /api/ip reads the visitor's address (and
+      // Vercel geo headers) server-side. External services are only a fallback
+      // for local dev, where /api/ip sees a private address.
+      try {
+        const res = await fetch('/api/ip');
+        if (res.ok) {
+          const d = await res.json();
+          const ip: string = d.ip || '';
+          const isPrivate =
+            !ip || ip === '::1' || ip.startsWith('127.') || ip.startsWith('192.168.') ||
+            ip.startsWith('10.') || ip.startsWith('fe80') || ip.toLowerCase() === 'localhost';
+          if (!isPrivate) return d;
+        }
+      } catch { /* fall through to external lookups */ }
       try {
         const res = await fetch('https://ipapi.co/json/');
         if (!res.ok) throw new Error(`ipapi ${res.status}`);

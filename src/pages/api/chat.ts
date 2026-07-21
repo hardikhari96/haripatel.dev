@@ -27,10 +27,10 @@ If the retrieved context doesn't contain enough information to answer, say so ho
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.NVIDIA_API_KEY;
+  const apiKey = import.meta.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return new Response(
-      JSON.stringify({ error: 'NVIDIA_API_KEY is not configured' }),
+      JSON.stringify({ error: 'OPENROUTER_API_KEY is not configured' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -113,15 +113,20 @@ export const POST: APIRoute = async ({ request }) => {
 
   const openai = new OpenAI({
     apiKey,
-    baseURL: 'https://integrate.api.nvidia.com/v1',
-    timeout: 15000,
+    baseURL: 'https://openrouter.ai/api/v1',
+    timeout: 30000,
+    maxRetries: 3,
+    defaultHeaders: {
+      'HTTP-Referer': 'https://haripatel.dev',
+      'X-Title': "Hari's AI Assistant",
+    },
   });
 
   const systemPrompt = buildSystemPrompt(context);
 
   try {
     const stream = await openai.chat.completions.create({
-      model: 'meta/llama-3.3-70b-instruct',
+      model: import.meta.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct',
       messages: [
         { role: 'system', content: systemPrompt },
         ...validatedMessages,
