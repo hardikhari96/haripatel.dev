@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/node": "^9.5.5",
@@ -15,5 +16,8 @@
     "astro": "^5.15.4",
     "openai": "^6.34.0",
     "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
   }
 }
