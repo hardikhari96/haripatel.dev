@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import ChatBot from '../components/ChatBot.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  active?: 'home' | 'projects' | 'blog' | 'none';
+}
+const { title, description, active = 'none' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/png" href="/favicon.png" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="generator" content={Astro.generator} />
+	<meta name="robots" content="noindex, nofollow" />
+	<meta name="description" content={description} />
+	<title>{title}</title>
+	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
+	<script is:inline>
+		(function () {
+			var t = 'dark';
+			try { t = localStorage.getItem('theme') || 'dark'; } catch (e) {}
+			document.documentElement.setAttribute('data-theme', t);
+		})();
+	</script>
+</head>
+<body>
+	<header class="site-header">
+		<nav class="nav container">
+			<a href="/" class="brand">hari<span class="brand-accent">patel</span>.dev</a>
+			<div class="nav-links">
+				<a href="/" class={active === 'home' ? 'active' : ''}>Home</a>
+				<a href="/projects" class={active === 'projects' ? 'active' : ''}>Projects</a>
+				<a href="/blog" class={active === 'blog' ? 'active' : ''}>Blog</a>
+				<button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+					<span class="theme-icon-sun">☀️</span><span class="theme-icon-moon">🌙</span>
+				</button>
+			</div>
+		</nav>
+	</header>
+
+	<main class="container">
+		<slot />
+	</main>
+
+	<footer class="site-footer">
+		<p>© {new Date().getFullYear()} Harikrushna Patel — built with Astro</p>
+	</footer>
+
+	<ChatBot />
+
+	<script>
+		const root = document.documentElement;
+		document.getElementById('theme-toggle')?.addEventListener('click', () => {
+			const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+			root.setAttribute('data-theme', next);
+			try { localStorage.setItem('theme', next); } catch { /* ignore */ }
+		});
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						observer.unobserve(entry.target);
+					}
+				}
+			},
+			{ threshold: 0.08 }
+		);
+		document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+	</script>
+</body>
+</html>

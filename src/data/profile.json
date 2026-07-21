@@ -10,7 +10,7 @@
   "website": "https://haripatel.dev",
   "blog": "https://blogs.haripatel.dev",
   "cv": "/cv.pdf",
-  "showSkills": false,
+  "showSkills": true,
   "about": [
     "I am a hobbyist software developer.",
     "I specialize in backend and frontend development, along with system architecture. I also work with DevOps practices to streamline development and deployment workflows. I enjoy building scalable systems and working with modern technologies to create reliable, high-performance applications."
