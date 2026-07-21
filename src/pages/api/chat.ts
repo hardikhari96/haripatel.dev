@@ -1,6 +1,13 @@
 import type { APIRoute } from 'astro';
 import OpenAI from 'openai';
 import { queryRelevant, isSeeded } from '../../lib/kv';
+import {
+  validateChatMessages,
+  accumulateToolCallDelta,
+  TOOL_DEFINITIONS,
+  TOOLS_SYSTEM_PROMPT,
+  type ToolCall,
+} from '../../lib/chat-tools';
 
 function buildSystemPrompt(context: string) {
   return `You are a helpful assistant on Harikrushna Patel's personal website. Your job is to answer questions about Harikrushna's profile, skills, experience, and projects in a friendly and concise way.
@@ -16,7 +23,7 @@ Site pages:
 - Blog: /blog
 
 Keep your responses brief and relevant. Always include clickable markdown links when referring to projects or pages. If someone asks something unrelated to Harikrushna's profile, politely redirect them to ask about his skills, experience, or projects.
-If the retrieved context doesn't contain enough information to answer, say so honestly rather than making things up.`;
+If the retrieved context doesn't contain enough information to answer, say so honestly rather than making things up.${TOOLS_SYSTEM_PROMPT}`;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -46,17 +53,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const allowedRoles = new Set(['user', 'assistant']);
-  const validatedMessages = userMessages
-    .filter(
-      (msg): msg is { role: string; content: string } =>
-        typeof msg === 'object' &&
-        msg !== null &&
-        typeof msg.role === 'string' &&
-        allowedRoles.has(msg.role) &&
-        typeof msg.content === 'string'
-    )
-    .map((msg) => ({ role: msg.role as 'user' | 'assistant', content: msg.content }));
+  const validatedMessages = validateChatMessages(userMessages);
 
   if (validatedMessages.length === 0) {
     return new Response(
@@ -66,7 +63,8 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Get the latest user message for vector search
-  const lastUserMsg = validatedMessages[validatedMessages.length - 1].content;
+  const lastUser = [...validatedMessages].reverse().find((m) => m.role === 'user');
+  const lastUserMsg = lastUser?.content ?? '';
 
   // Build context via vector similarity search or fallback to local data
   let context: string;
@@ -123,26 +121,34 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const stream = await openai.chat.completions.create({
-      model: 'meta/llama-3.1-8b-instruct',
+      model: 'meta/llama-3.3-70b-instruct',
       messages: [
         { role: 'system', content: systemPrompt },
         ...validatedMessages,
-      ],
+      ] as Parameters<typeof openai.chat.completions.create>[0]['messages'],
+      tools: TOOL_DEFINITIONS,
       temperature: 0.4,
       top_p: 0.95,
-      max_tokens: 512,
+      max_tokens: 1024,
       stream: true,
     });
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
+        const toolCalls: ToolCall[] = [];
         try {
           for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta?.content;
-            if (content) {
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
+            const delta = chunk.choices[0]?.delta;
+            if (delta?.content) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: delta.content })}\n\n`));
             }
+            if (delta?.tool_calls) {
+              accumulateToolCallDelta(toolCalls, delta.tool_calls as unknown[]);
+            }
+          }
+          if (toolCalls.length > 0) {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ tool_calls: toolCalls })}\n\n`));
           }
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
