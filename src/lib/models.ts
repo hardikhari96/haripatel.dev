@@ -16,22 +16,22 @@ export interface ModelOption {
 
 export const AVAILABLE_MODELS: ModelOption[] = [
   {
+    id: 'nvidia/nemotron-3-super-120b-a12b:free',
+    label: 'NVIDIA Nemotron 3 Super',
+    blurb: 'Reliable, responsive all-rounder with deep reasoning and strong tool use — the default.',
+    context: '1M',
+  },
+  {
     id: 'google/gemma-4-31b-it:free',
     label: 'Google Gemma 4 31B',
-    blurb: 'Balanced all-rounder with strong instruction-following — the reliable default.',
+    blurb: 'Balanced and strong at instructions, but its free tier is often rate-limited.',
     context: '256K',
   },
   {
     id: 'openai/gpt-oss-20b:free',
     label: 'OpenAI gpt-oss 20B',
-    blurb: 'Fast and lightweight — best for snappy back-and-forth Q&A.',
+    blurb: 'Lightweight — snappy for simple Q&A, but can be slow or busy on the free tier.',
     context: '128K',
-  },
-  {
-    id: 'nvidia/nemotron-3-super-120b-a12b:free',
-    label: 'NVIDIA Nemotron 3 Super',
-    blurb: 'Deepest reasoning and multi-step tool use — best for complex questions (slower).',
-    context: '1M',
   },
   {
     id: 'poolside/laguna-m.1:free',
