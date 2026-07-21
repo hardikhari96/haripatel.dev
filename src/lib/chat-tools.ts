@@ -132,7 +132,65 @@ export const TOOL_DEFINITIONS = [
       parameters: emptyParams,
     },
   },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'create_folder',
+      description:
+        "Create a new folder inside a folder the visitor picks on their own device. The browser asks the visitor for read-write permission and they choose the target folder. Intermediate folders in the path are created as needed. Only supported in Chromium browsers; returns an error elsewhere. Use ONLY when the visitor explicitly asks to create a folder.",
+      parameters: {
+        type: 'object' as const,
+        properties: {
+          path: {
+            type: 'string',
+            description: "Relative path of the folder to create inside the picked folder, e.g. 'notes' or 'reports/2026'.",
+          },
+        },
+        required: ['path'],
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'create_file',
+      description:
+        "Create or overwrite a text file inside a folder the visitor picks on their own device, writing the given text content into it. The browser asks the visitor for read-write permission. Intermediate folders in the path are created as needed. Overwrites an existing file at the same path. Only supported in Chromium browsers; returns an error elsewhere. Use ONLY when the visitor explicitly asks to create or save a file.",
+      parameters: {
+        type: 'object' as const,
+        properties: {
+          path: {
+            type: 'string',
+            description: "Relative path of the file to create or overwrite, e.g. 'notes/hello.txt'.",
+          },
+          content: {
+            type: 'string',
+            description: 'The text content to write into the file.',
+          },
+        },
+        required: ['path', 'content'],
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'delete_entry',
+      description:
+        "Delete a file or folder inside a folder the visitor picks on their own device. Folders are removed recursively along with everything inside them. This is destructive and cannot be undone. The browser asks the visitor for read-write permission. Only supported in Chromium browsers; returns an error elsewhere. Use ONLY when the visitor has clearly and explicitly asked to delete that specific file or folder.",
+      parameters: {
+        type: 'object' as const,
+        properties: {
+          path: {
+            type: 'string',
+            description: "Relative path of the file or folder to delete inside the picked folder, e.g. 'old.txt' or 'reports/2025'.",
+          },
+        },
+        required: ['path'],
+      },
+    },
+  },
 ];
 
 export const TOOLS_SYSTEM_PROMPT = `
-You also have browser tools that run on the visitor's own device. Use them ONLY when the visitor asks about their own environment (their IP, location, device, network, battery, or a folder they want to inspect) — never for questions about Harikrushna. The list_directory tool reads only file metadata (names, sizes, types) after the visitor picks a folder and never reads file contents; make that clear if they ask what it can see, and if it returns a "cancelled" result, simply acknowledge that they declined. After a tool result arrives, summarise it conversationally in plain language; do not dump raw JSON. If a tool returns an error, explain it simply (e.g. permission denied, unsupported browser). Never invent values a tool did not return.`;
+You also have browser tools that run on the visitor's own device. Use them ONLY when the visitor asks about their own environment (their IP, location, device, network, battery, or files and folders they want to inspect or manage) — never for questions about Harikrushna. The list_directory tool reads only file metadata (names, sizes, types) after the visitor picks a folder and never reads file contents. The create_folder, create_file, and delete_entry tools modify real files inside a folder the visitor picks; the browser asks them for read-write permission first. Only call a write tool when the visitor has clearly and explicitly asked for that specific action, and NEVER call delete_entry unless they explicitly named what to delete — deletion is permanent. If a tool returns a "cancelled" result, simply acknowledge that they declined. After a tool result arrives, summarise it conversationally in plain language; do not dump raw JSON. If a tool returns an error, explain it simply (e.g. permission denied, unsupported browser). Never invent values a tool did not return.`;

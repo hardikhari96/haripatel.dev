@@ -691,8 +691,95 @@
     return ext !== '' && textExts.includes(ext);
   }
 
+  // A read-write folder handle, shared across the create/write/delete tools so
+  // the visitor only has to pick (and grant read-write to) a folder once.
+  let writeDir: any = null;
+
+  async function hasRWPermission(handle: any): Promise<boolean> {
+    try {
+      if (!handle?.queryPermission) return false;
+      return (await handle.queryPermission({ mode: 'readwrite' })) === 'granted';
+    } catch { return false; }
+  }
+
+  // Ensure we hold a read-write folder handle. If we already have one the visitor
+  // granted, reuse it silently. Otherwise show a button — the click supplies the
+  // user gesture the picker / permission request needs — and pick or re-request.
+  function ensureWriteDir(
+    actionLabel: string
+  ): Promise<{ handle?: any; error?: string; cancelled?: boolean }> {
+    const picker = (window as any).showDirectoryPicker;
+    if (typeof picker !== 'function') {
+      return Promise.resolve({
+        error: 'Creating or editing files (the File System Access API) is only available in Chromium browsers such as Chrome, Edge, or Opera.',
+      });
+    }
+    return new Promise((resolve) => {
+      (async () => {
+        if (writeDir && await hasRWPermission(writeDir)) {
+          resolve({ handle: writeDir });
+          return;
+        }
+        const row = document.createElement('div');
+        row.className = 'chatbot-msg-row tool-row';
+        const chooseBtn = document.createElement('button');
+        chooseBtn.type = 'button';
+        chooseBtn.className = 'chatbot-folder-btn';
+        chooseBtn.textContent = `📁 Choose folder & ${actionLabel}`;
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className = 'chatbot-folder-btn chatbot-folder-cancel';
+        cancelBtn.textContent = 'Cancel';
+        row.appendChild(chooseBtn);
+        row.appendChild(cancelBtn);
+        messagesEl.appendChild(row);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        let settled = false;
+        cancelBtn.addEventListener('click', () => {
+          if (settled) return;
+          settled = true;
+          row.remove();
+          resolve({ cancelled: true });
+        });
+        chooseBtn.addEventListener('click', async () => {
+          if (settled) return;
+          settled = true;
+          chooseBtn.disabled = true;
+          cancelBtn.disabled = true;
+          try {
+            // Reuse the existing folder if the visitor re-grants permission to it.
+            if (writeDir && writeDir.requestPermission) {
+              const p = await writeDir.requestPermission({ mode: 'readwrite' });
+              if (p === 'granted') { row.remove(); resolve({ handle: writeDir }); return; }
+            }
+            writeDir = await picker.call(window, { mode: 'readwrite' });
+            row.remove();
+            resolve({ handle: writeDir });
+          } catch (err: any) {
+            row.remove();
+            if (err?.name === 'AbortError') resolve({ cancelled: true });
+            else resolve({ error: err?.message || 'Could not open the folder.' });
+          }
+        });
+      })();
+    });
+  }
+
+  // Split a relative path into safe segments (drops '', '.', '..' and whitespace).
+  function splitPath(path: unknown): string[] {
+    return String(path ?? '').split('/').map((s) => s.trim()).filter((s) => s && s !== '.' && s !== '..');
+  }
+
+  // Walk (optionally creating) subdirectories from a root handle.
+  async function resolveParentDir(root: any, segments: string[], create: boolean): Promise<any> {
+    let dir = root;
+    for (const seg of segments) dir = await dir.getDirectoryHandle(seg, { create });
+    return dir;
+  }
+
   // ===== Browser tools (executed on the visitor's device) =====
-  const browserTools: Record<string, () => Promise<Record<string, unknown>>> = {
+  const browserTools: Record<string, (args: Record<string, any>) => Promise<Record<string, unknown>>> = {
     // Ask the visitor to pick a folder, then report metadata about its contents.
     // The picker requires a user gesture, so we insert a button and resolve only
     // once the visitor clicks it and chooses a folder. Metadata only — no file
@@ -780,6 +867,69 @@
           }
         });
       });
+    },
+
+    // ---- Write tools: create/edit/delete real files in a folder the visitor picks.
+    // All prompt the browser for read-write permission the first time.
+    async create_folder(args) {
+      const segments = splitPath(args?.path);
+      if (segments.length === 0) return { error: 'A folder path is required.' };
+      const picked = await ensureWriteDir('create folder');
+      if (picked.error) return { error: picked.error };
+      if (picked.cancelled) return { cancelled: true, note: 'The visitor declined to share a folder.' };
+      try {
+        await resolveParentDir(picked.handle, segments, true);
+        return {
+          success: true,
+          created: segments.join('/'),
+          inFolder: picked.handle.name,
+          note: 'Folder created inside the folder the visitor selected.',
+        };
+      } catch (err: any) {
+        return { error: err?.message || 'Could not create the folder.' };
+      }
+    },
+
+    async create_file(args) {
+      const segments = splitPath(args?.path);
+      if (segments.length === 0) return { error: 'A file path is required.' };
+      const content = typeof args?.content === 'string' ? args.content : '';
+      const fileName = segments.pop() as string;
+      const picked = await ensureWriteDir('create file');
+      if (picked.error) return { error: picked.error };
+      if (picked.cancelled) return { cancelled: true, note: 'The visitor declined to share a folder.' };
+      try {
+        const dir = await resolveParentDir(picked.handle, segments, true);
+        const fileHandle = await dir.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        return {
+          success: true,
+          wrote: [...segments, fileName].join('/'),
+          charsWritten: content.length,
+          inFolder: picked.handle.name,
+        };
+      } catch (err: any) {
+        return { error: err?.message || 'Could not write the file.' };
+      }
+    },
+
+    async delete_entry(args) {
+      const segments = splitPath(args?.path);
+      if (segments.length === 0) return { error: 'A path to delete is required.' };
+      const name = segments.pop() as string;
+      const fullPath = [...segments, name].join('/');
+      const picked = await ensureWriteDir(`delete "${fullPath}"`);
+      if (picked.error) return { error: picked.error };
+      if (picked.cancelled) return { cancelled: true, note: 'The visitor declined the deletion.' };
+      try {
+        const dir = await resolveParentDir(picked.handle, segments, false);
+        await dir.removeEntry(name, { recursive: true });
+        return { success: true, deleted: fullPath, inFolder: picked.handle.name };
+      } catch (err: any) {
+        return { error: err?.message || 'Could not delete that entry (it may not exist).' };
+      }
     },
 
     async get_public_ip() {
@@ -876,11 +1026,11 @@
     },
   };
 
-  async function executeBrowserTool(name: string): Promise<Record<string, unknown>> {
+  async function executeBrowserTool(name: string, args: Record<string, any>): Promise<Record<string, unknown>> {
     const fn = browserTools[name];
     if (!fn) return { error: `Unknown tool: ${name}` };
     try {
-      return await fn();
+      return await fn(args);
     } catch (err) {
       return { error: err instanceof Error ? err.message : 'Tool failed' };
     }
@@ -983,8 +1133,15 @@
           break;
         }
         for (const call of toolCalls) {
-          appendToolBubble(`▶ ${call.function.name}()`);
-          const result = await executeBrowserTool(call.function.name);
+          let args: Record<string, any> = {};
+          try {
+            if (call.function.arguments) args = JSON.parse(call.function.arguments);
+          } catch { /* leave args empty on malformed JSON */ }
+          const argPreview = call.function.arguments && call.function.arguments !== '{}'
+            ? call.function.arguments
+            : '';
+          appendToolBubble(`▶ ${call.function.name}(${argPreview})`);
+          const result = await executeBrowserTool(call.function.name, args);
           appendToolBubble(`${call.function.name} → ${JSON.stringify(result, null, 2)}`);
           conversationHistory.push({
             role: 'tool',

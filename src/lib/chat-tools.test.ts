@@ -108,7 +108,7 @@ describe('accumulateToolCallDelta', () => {
 });
 
 describe('TOOL_DEFINITIONS', () => {
-  it('defines the six browser tools', () => {
+  it('defines the browser tools', () => {
     const names = TOOL_DEFINITIONS.map((t) => t.function.name);
     expect(names).toEqual([
       'get_public_ip',
@@ -117,6 +117,9 @@ describe('TOOL_DEFINITIONS', () => {
       'get_network_info',
       'get_battery_status',
       'list_directory',
+      'create_folder',
+      'create_file',
+      'delete_entry',
     ]);
   });
 });
