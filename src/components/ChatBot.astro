@@ -235,6 +235,27 @@
     background: rgba(240, 167, 66, 0.07);
   }
 
+  /* Choose-folder action buttons */
+  .chatbot-folder-btn {
+    background: linear-gradient(135deg, #0066cc, #0052a3);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.2s;
+  }
+  .chatbot-folder-btn:hover:not(:disabled) { transform: scale(1.05); }
+  .chatbot-folder-btn:disabled { opacity: 0.5; cursor: default; }
+  .chatbot-folder-cancel {
+    background: #e2e8f0;
+    color: #475569;
+    margin-left: 8px;
+  }
+  [data-theme="dark"] .chatbot-folder-cancel { background: #334155; color: #cbd5e1; }
+
   /* ===== Markdown content styling inside bot bubbles ===== */
   .bot-bubble h1, .bot-bubble h2, .bot-bubble h3,
   .bot-bubble h4, .bot-bubble h5, .bot-bubble h6 {
@@ -656,8 +677,111 @@
     return row;
   }
 
+  // Best-effort guess at whether a file is plain text, from its MIME type /
+  // extension. Used only to label entries — no file contents are ever read.
+  function isTextFile(name: string, mime: string): boolean {
+    if (mime.startsWith('text/')) return true;
+    if (/^application\/(json|xml|javascript|x-yaml|x-sh)$/.test(mime)) return true;
+    const ext = name.includes('.') ? name.slice(name.lastIndexOf('.') + 1).toLowerCase() : '';
+    const textExts = [
+      'txt','md','markdown','json','csv','tsv','xml','yaml','yml','html','htm',
+      'css','js','mjs','cjs','ts','jsx','tsx','py','java','c','cpp','h','hpp','cs',
+      'go','rs','rb','php','sh','bash','sql','ini','cfg','conf','log','env','toml',
+    ];
+    return ext !== '' && textExts.includes(ext);
+  }
+
   // ===== Browser tools (executed on the visitor's device) =====
   const browserTools: Record<string, () => Promise<Record<string, unknown>>> = {
+    // Ask the visitor to pick a folder, then report metadata about its contents.
+    // The picker requires a user gesture, so we insert a button and resolve only
+    // once the visitor clicks it and chooses a folder. Metadata only — no file
+    // contents are ever read.
+    list_directory() {
+      const picker = (window as any).showDirectoryPicker;
+      if (typeof picker !== 'function') {
+        return Promise.resolve({
+          error: 'Folder access (the File System Access API) is only available in Chromium browsers such as Chrome, Edge, or Opera.',
+        });
+      }
+
+      return new Promise<Record<string, unknown>>((resolve) => {
+        const row = document.createElement('div');
+        row.className = 'chatbot-msg-row tool-row';
+
+        const chooseBtn = document.createElement('button');
+        chooseBtn.type = 'button';
+        chooseBtn.className = 'chatbot-folder-btn';
+        chooseBtn.textContent = '📁 Choose folder';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.className = 'chatbot-folder-btn chatbot-folder-cancel';
+        cancelBtn.textContent = 'Cancel';
+
+        row.appendChild(chooseBtn);
+        row.appendChild(cancelBtn);
+        messagesEl.appendChild(row);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        let settled = false;
+
+        cancelBtn.addEventListener('click', () => {
+          if (settled) return;
+          settled = true;
+          row.remove();
+          resolve({ cancelled: true, note: 'The visitor chose not to share a folder.' });
+        });
+
+        chooseBtn.addEventListener('click', async () => {
+          if (settled) return;
+          settled = true;
+          chooseBtn.disabled = true;
+          cancelBtn.disabled = true;
+          try {
+            // The click above provides the user activation showDirectoryPicker needs.
+            const dirHandle = await picker.call(window, { mode: 'read' });
+            const MAX_ENTRIES = 100;
+            const entries: Array<Record<string, unknown>> = [];
+            let truncated = false;
+
+            for await (const [name, handle] of dirHandle.entries()) {
+              if (entries.length >= MAX_ENTRIES) { truncated = true; break; }
+              if (handle.kind === 'directory') {
+                entries.push({ name, kind: 'directory' });
+              } else {
+                const file = await handle.getFile();
+                entries.push({
+                  name,
+                  kind: 'file',
+                  sizeBytes: file.size,
+                  mimeType: file.type || 'unknown',
+                  isText: isTextFile(name, file.type),
+                  lastModified: new Date(file.lastModified).toISOString(),
+                });
+              }
+            }
+
+            row.remove();
+            resolve({
+              folderName: dirHandle.name,
+              entryCount: entries.length,
+              truncated,
+              entries,
+              note: 'Only file metadata (name, size, type) was read. No file contents were accessed.',
+            });
+          } catch (err: any) {
+            row.remove();
+            if (err?.name === 'AbortError') {
+              resolve({ cancelled: true, note: 'The visitor closed the picker without choosing a folder.' });
+            } else {
+              resolve({ error: err?.message || 'Could not read the selected folder.' });
+            }
+          }
+        });
+      });
+    },
+
     async get_public_ip() {
       // First-party lookup: our own /api/ip reads the visitor's address (and
       // Vercel geo headers) server-side. External services are only a fallback

@@ -123,7 +123,16 @@ export const TOOL_DEFINITIONS = [
       parameters: emptyParams,
     },
   },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'list_directory',
+      description:
+        "Ask the visitor to pick a folder on their own device, then return metadata about its contents: each entry's name, whether it is a file or directory, and for files the size, MIME type, whether it looks like a text file, and last-modified date. Reads metadata ONLY — never the contents of any file. Shows the visitor a 'Choose folder' button they must click, then a native folder picker. Only supported in Chromium browsers (Chrome, Edge, Opera); returns an error elsewhere. Use only when the visitor explicitly asks to inspect or list files in a folder.",
+      parameters: emptyParams,
+    },
+  },
 ];
 
 export const TOOLS_SYSTEM_PROMPT = `
-You also have browser tools that run on the visitor's own device. Use them ONLY when the visitor asks about their own environment (their IP, location, device, network, or battery) — never for questions about Harikrushna. After a tool result arrives, summarise it conversationally in plain language; do not dump raw JSON. If a tool returns an error, explain it simply (e.g. permission denied, unsupported browser). Never invent values a tool did not return.`;
+You also have browser tools that run on the visitor's own device. Use them ONLY when the visitor asks about their own environment (their IP, location, device, network, battery, or a folder they want to inspect) — never for questions about Harikrushna. The list_directory tool reads only file metadata (names, sizes, types) after the visitor picks a folder and never reads file contents; make that clear if they ask what it can see, and if it returns a "cancelled" result, simply acknowledge that they declined. After a tool result arrives, summarise it conversationally in plain language; do not dump raw JSON. If a tool returns an error, explain it simply (e.g. permission denied, unsupported browser). Never invent values a tool did not return.`;
