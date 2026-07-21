@@ -16,6 +16,21 @@ describe('models', () => {
     }
   });
 
+  it('carries valid speed / reliability ratings on every model', () => {
+    for (const m of AVAILABLE_MODELS) {
+      expect(['fast', 'medium', 'slow', 'unknown']).toContain(m.speed);
+      expect(['high', 'medium', 'low']).toContain(m.reliability);
+      expect(m.latencyMs === null || m.latencyMs > 0).toBe(true);
+      // A measured latency implies a known speed, and vice versa.
+      expect((m.latencyMs === null) === (m.speed === 'unknown')).toBe(true);
+    }
+  });
+
+  it('keeps a reliable model as the default', () => {
+    const def = AVAILABLE_MODELS.find((m) => m.id === DEFAULT_MODEL)!;
+    expect(def.reliability).toBe('high');
+  });
+
   it('resolveModel accepts an allow-listed id', () => {
     const id = AVAILABLE_MODELS[1].id;
     expect(resolveModel(id)).toBe(id);

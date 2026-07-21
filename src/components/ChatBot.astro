@@ -237,6 +237,27 @@
     line-height: 1.4;
     color: #64748b;
   }
+  .chatbot-model-option .opt-meta {
+    display: flex;
+    gap: 6px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+  }
+  .opt-chip {
+    font-size: 0.64rem;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+  .opt-chip.opt-speed { background: #f1f5f9; color: #475569; }
+  .opt-chip.opt-rel-high { background: #dcfce7; color: #15803d; }
+  .opt-chip.opt-rel-medium { background: #fef9c3; color: #a16207; }
+  .opt-chip.opt-rel-low { background: #fee2e2; color: #b91c1c; }
+  [data-theme="dark"] .opt-chip.opt-speed { background: #334155; color: #cbd5e1; }
+  [data-theme="dark"] .opt-chip.opt-rel-high { background: rgba(34,197,94,0.18); color: #4ade80; }
+  [data-theme="dark"] .opt-chip.opt-rel-medium { background: rgba(234,179,8,0.18); color: #fbbf24; }
+  [data-theme="dark"] .opt-chip.opt-rel-low { background: rgba(239,68,68,0.18); color: #f87171; }
 
   /* Messages area */
   .chatbot-messages {
@@ -546,6 +567,9 @@
     return AVAILABLE_MODELS.find((m) => m.id === selectedModel)?.label ?? 'Model';
   }
 
+  const SPEED_LABEL: Record<string, string> = { fast: 'Fast', medium: 'Medium', slow: 'Slow', unknown: 'Speed N/A' };
+  const RELIABILITY_LABEL: Record<string, string> = { high: 'Reliable', medium: 'Usually up', low: 'Often busy' };
+
   function closeModelMenu() {
     modelMenu.classList.add('chatbot-hidden');
     modelBtn.setAttribute('aria-expanded', 'false');
@@ -570,8 +594,21 @@
       const blurb = document.createElement('span');
       blurb.className = 'opt-blurb';
       blurb.textContent = m.blurb;
+      // Rating chips: measured speed (with latency) and reliability.
+      const meta = document.createElement('span');
+      meta.className = 'opt-meta';
+      const speedChip = document.createElement('span');
+      speedChip.className = 'opt-chip opt-speed';
+      speedChip.textContent = '⚡ ' + (SPEED_LABEL[m.speed] ?? m.speed) +
+        (m.latencyMs ? ` · ~${(m.latencyMs / 1000).toFixed(1)}s` : '');
+      const relChip = document.createElement('span');
+      relChip.className = 'opt-chip opt-rel-' + m.reliability;
+      relChip.textContent = RELIABILITY_LABEL[m.reliability] ?? m.reliability;
+      meta.appendChild(speedChip);
+      meta.appendChild(relChip);
       opt.appendChild(label);
       opt.appendChild(blurb);
+      opt.appendChild(meta);
       opt.addEventListener('click', () => {
         selectedModel = m.id;
         try { localStorage.setItem(MODEL_KEY, m.id); } catch { /* ignore */ }
