@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  let body: { messages?: Array<{ role: string; content: string }> };
+  let body: { messages?: unknown };
   try {
     body = await request.json();
   } catch {

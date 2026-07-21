@@ -66,6 +66,17 @@ describe('validateChatMessages', () => {
     expect(validateChatMessages('nope')).toEqual([]);
     expect(validateChatMessages(undefined)).toEqual([]);
   });
+
+  it('treats assistant messages with empty or null tool_calls as plain content', () => {
+    const out = validateChatMessages([
+      { role: 'assistant', content: 'hi', tool_calls: [] },
+      { role: 'assistant', content: 'yo', tool_calls: null },
+    ]);
+    expect(out).toEqual([
+      { role: 'assistant', content: 'hi' },
+      { role: 'assistant', content: 'yo' },
+    ]);
+  });
 });
 
 describe('accumulateToolCallDelta', () => {

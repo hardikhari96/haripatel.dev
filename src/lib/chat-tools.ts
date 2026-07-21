@@ -39,7 +39,7 @@ export function validateChatMessages(raw: unknown): ChatMessage[] {
     const msg = m as Record<string, unknown>;
     if (msg.role === 'user' && typeof msg.content === 'string') {
       out.push({ role: 'user', content: msg.content });
-    } else if (msg.role === 'assistant' && msg.tool_calls !== undefined) {
+    } else if (msg.role === 'assistant' && Array.isArray(msg.tool_calls) && msg.tool_calls.length > 0) {
       const calls = cleanToolCalls(msg.tool_calls);
       if (calls) {
         out.push({

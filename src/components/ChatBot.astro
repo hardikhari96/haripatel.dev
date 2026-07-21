@@ -464,6 +464,15 @@
         if (state.fullscreen) container.classList.add('chatbot-fullscreen');
       }
     } catch { /* ignore */ }
+    // Prune a trailing dangling assistant tool_calls message (e.g. the visitor
+    // navigated away mid-execution before tool responses were recorded).
+    if (conversationHistory.length > 0) {
+      const last = conversationHistory[conversationHistory.length - 1];
+      if (last.role === 'assistant' && Array.isArray(last.tool_calls) && last.tool_calls.length > 0) {
+        conversationHistory.pop();
+        saveHistory();
+      }
+    }
     // Restore message bubbles
     for (const msg of conversationHistory) {
       if (msg.role === 'user' && msg.content) appendMessage(msg.content, 'user');
@@ -562,6 +571,7 @@
     html = html.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
       (_m, linkText, url) => {
+        if (url.includes('"')) return linkText;
         if (url.startsWith('/') || url.startsWith('https://')) {
           const target = '_blank';
           return `<a href="${url}" target="${target}" rel="noopener">${linkText}</a>`;
@@ -664,6 +674,7 @@
       } catch {
         try {
           const res = await fetch('https://api.ipify.org?format=json');
+          if (!res.ok) throw new Error('ipify ' + res.status);
           const d = await res.json();
           return { ip: d.ip, note: 'Only the IP could be determined (geo lookup unavailable).' };
         } catch {
@@ -821,6 +832,15 @@
         const { toolCalls } = await streamAssistantTurn();
         if (toolCalls.length === 0) break;
         if (round === MAX_TOOL_ROUNDS) {
+          for (const call of toolCalls) {
+            conversationHistory.push({
+              role: 'tool',
+              tool_call_id: call.id,
+              content: JSON.stringify({ error: 'Tool budget exhausted for this turn.' }),
+              name: call.function.name,
+            });
+          }
+          saveHistory();
           appendMessage('⚠️ Stopped: too many tool calls in one turn.', 'bot');
           break;
         }
