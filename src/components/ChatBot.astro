@@ -30,7 +30,7 @@
     <div class="chatbot-msg-row bot-row">
       <span class="chatbot-avatar">🤖</span>
       <div class="chatbot-bubble bot-bubble">
-        Hi! I'm an AI assistant. Ask me anything about Harikrushna's skills, experience, or projects!
+        Hi! I'm an AI assistant. Ask me anything about Harikrushna's skills, experience, or projects — or try "what's my IP?"
       </div>
     </div>
   </div>
@@ -38,7 +38,7 @@
     <input
       id="chatbot-input"
       type="text"
-      placeholder="Ask about Hari's projects, skills..."
+      placeholder="Ask about Hari — or try 'what's my IP?'"
       autocomplete="off"
     />
     <button type="submit" class="chatbot-send" title="Send">
@@ -216,6 +216,25 @@
     white-space: pre-wrap;
   }
 
+  /* Browser tool activity bubbles */
+  .chatbot-msg-row.tool-row { align-self: center; max-width: 92%; margin: 0 auto; }
+  .chatbot-bubble.tool-bubble {
+    background: rgba(240, 167, 66, 0.08);
+    border: 1px dashed rgba(240, 167, 66, 0.55);
+    border-radius: 10px;
+    color: #92610e;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 8px 12px;
+  }
+  [data-theme="dark"] .chatbot-bubble.tool-bubble {
+    color: #f3d9a4;
+    background: rgba(240, 167, 66, 0.07);
+  }
+
   /* ===== Markdown content styling inside bot bubbles ===== */
   .bot-bubble h1, .bot-bubble h2, .bot-bubble h3,
   .bot-bubble h4, .bot-bubble h5, .bot-bubble h6 {
@@ -385,8 +404,16 @@
   const STORAGE_KEY = 'chatbot_history';
   const STATE_KEY = 'chatbot_state';
 
+  type HistoryMessage = {
+    role: string;
+    content: string | null;
+    tool_calls?: Array<{ id: string; type: string; function: { name: string; arguments: string } }>;
+    tool_call_id?: string;
+    name?: string;
+  };
+
   // Restore conversation history from sessionStorage
-  let conversationHistory: Array<{ role: string; content: string }> = [];
+  let conversationHistory: HistoryMessage[] = [];
   try {
     const saved = sessionStorage.getItem(STORAGE_KEY);
     if (saved) conversationHistory = JSON.parse(saved);
@@ -439,8 +466,15 @@
     } catch { /* ignore */ }
     // Restore message bubbles
     for (const msg of conversationHistory) {
-      if (msg.role === 'user') appendMessage(msg.content, 'user');
-      else if (msg.role === 'assistant') appendMessage(msg.content, 'bot');
+      if (msg.role === 'user' && msg.content) appendMessage(msg.content, 'user');
+      else if (msg.role === 'assistant') {
+        if (Array.isArray(msg.tool_calls)) {
+          for (const c of msg.tool_calls) appendToolBubble(`▶ ${c.function.name}()`);
+        }
+        if (msg.content) appendMessage(msg.content, 'bot');
+      } else if (msg.role === 'tool' && msg.content) {
+        appendToolBubble(`${msg.name || 'tool'} → ${msg.content}`);
+      }
     }
   })();
 
@@ -584,6 +618,17 @@
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
+  function appendToolBubble(text: string) {
+    const row = document.createElement('div');
+    row.className = 'chatbot-msg-row tool-row';
+    const bubble = document.createElement('div');
+    bubble.className = 'chatbot-bubble tool-bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
   function showTyping(): HTMLElement {
     const row = document.createElement('div');
     row.className = 'chatbot-msg-row bot-row';
@@ -601,7 +646,162 @@
     return row;
   }
 
-  // ===== Streaming submit handler =====
+  // ===== Browser tools (executed on the visitor's device) =====
+  const browserTools: Record<string, () => Promise<Record<string, unknown>>> = {
+    async get_public_ip() {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) throw new Error(`ipapi ${res.status}`);
+        const d = await res.json();
+        return {
+          ip: d.ip,
+          city: d.city,
+          region: d.region,
+          country: d.country_name,
+          isp: d.org,
+          timezone: d.timezone,
+        };
+      } catch {
+        try {
+          const res = await fetch('https://api.ipify.org?format=json');
+          const d = await res.json();
+          return { ip: d.ip, note: 'Only the IP could be determined (geo lookup unavailable).' };
+        } catch {
+          return { error: 'Could not determine the public IP (both lookup services failed).' };
+        }
+      }
+    },
+
+    get_location() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          return resolve({ error: 'Geolocation is not supported by this browser.' });
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+            accuracy_meters: pos.coords.accuracy,
+          }),
+          (err) => resolve({ error: `Could not get location: ${err.message}` }),
+          { timeout: 10000 }
+        );
+      });
+    },
+
+    async get_device_details() {
+      return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen: { width: screen.width, height: screen.height, pixelRatio: window.devicePixelRatio },
+        cpuCores: navigator.hardwareConcurrency ?? 'unknown',
+        deviceMemoryGB: (navigator as any).deviceMemory ?? 'unknown',
+        touchSupport: navigator.maxTouchPoints > 0,
+        cookiesEnabled: navigator.cookieEnabled,
+      };
+    },
+
+    async get_network_info() {
+      const c = (navigator as any).connection;
+      return {
+        online: navigator.onLine,
+        effectiveType: c?.effectiveType ?? 'unknown',
+        downlinkMbps: c?.downlink ?? 'unknown',
+        rttMs: c?.rtt ?? 'unknown',
+        saveData: c?.saveData ?? 'unknown',
+      };
+    },
+
+    async get_battery_status() {
+      const nav = navigator as any;
+      if (!nav.getBattery) {
+        return { error: 'The Battery API is not supported by this browser (Chromium only).' };
+      }
+      const b = await nav.getBattery();
+      return {
+        levelPercent: Math.round(b.level * 100),
+        charging: b.charging,
+      };
+    },
+  };
+
+  async function executeBrowserTool(name: string): Promise<Record<string, unknown>> {
+    const fn = browserTools[name];
+    if (!fn) return { error: `Unknown tool: ${name}` };
+    try {
+      return await fn();
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : 'Tool failed' };
+    }
+  }
+
+  // ===== Streaming + tool loop =====
+  const MAX_TOOL_ROUNDS = 5;
+
+  async function streamAssistantTurn(): Promise<{ content: string; toolCalls: NonNullable<HistoryMessage['tool_calls']> }> {
+    const typingRow = showTyping();
+    let res: Response;
+    try {
+      res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: conversationHistory }),
+      });
+    } finally {
+      typingRow.remove();
+    }
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ error: 'Request failed' }));
+      throw new Error(errData.error || 'Something went wrong.');
+    }
+
+    let bubble: HTMLElement | null = null;
+    let fullText = '';
+    let toolCalls: NonNullable<HistoryMessage['tool_calls']> = [];
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data: ')) continue;
+        const payload = trimmed.slice(6);
+        if (payload === '[DONE]') continue;
+        try {
+          const data = JSON.parse(payload);
+          if (data.content) {
+            if (!bubble) bubble = createBotRow().bubble;
+            fullText += data.content;
+            bubble.innerHTML = renderMarkdown(fullText);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+          if (Array.isArray(data.tool_calls)) toolCalls = data.tool_calls;
+          if (data.error) {
+            if (!bubble) bubble = createBotRow().bubble;
+            bubble.innerHTML = renderMarkdown(fullText + '\n\n⚠️ ' + data.error);
+          }
+        } catch { /* skip malformed chunks */ }
+      }
+    }
+
+    if (toolCalls.length > 0) {
+      conversationHistory.push({ role: 'assistant', content: fullText || null, tool_calls: toolCalls });
+    } else if (fullText) {
+      conversationHistory.push({ role: 'assistant', content: fullText });
+    }
+    saveHistory();
+    return { content: fullText, toolCalls };
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = input.value.trim();
@@ -616,64 +816,29 @@
     sendBtn.disabled = true;
     input.disabled = true;
 
-    const typingRow = showTyping();
-
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory }),
-      });
-
-      typingRow.remove();
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Request failed' }));
-        appendMessage(errData.error || 'Something went wrong.', 'bot');
-        return;
-      }
-
-      // Stream the response
-      const { row: _botRow, bubble } = createBotRow();
-      let fullText = '';
-      const reader = res.body!.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed || !trimmed.startsWith('data: ')) continue;
-          const payload = trimmed.slice(6);
-          if (payload === '[DONE]') break;
-          try {
-            const data = JSON.parse(payload);
-            if (data.content) {
-              fullText += data.content;
-              bubble.innerHTML = renderMarkdown(fullText);
-              messagesEl.scrollTop = messagesEl.scrollHeight;
-            }
-            if (data.error) {
-              bubble.innerHTML = renderMarkdown(fullText + '\n\n⚠️ ' + data.error);
-            }
-          } catch { /* skip malformed chunks */ }
+      for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+        const { toolCalls } = await streamAssistantTurn();
+        if (toolCalls.length === 0) break;
+        if (round === MAX_TOOL_ROUNDS) {
+          appendMessage('⚠️ Stopped: too many tool calls in one turn.', 'bot');
+          break;
+        }
+        for (const call of toolCalls) {
+          appendToolBubble(`▶ ${call.function.name}()`);
+          const result = await executeBrowserTool(call.function.name);
+          appendToolBubble(`${call.function.name} → ${JSON.stringify(result, null, 2)}`);
+          conversationHistory.push({
+            role: 'tool',
+            tool_call_id: call.id,
+            content: JSON.stringify(result),
+            name: call.function.name,
+          });
+          saveHistory();
         }
       }
-
-      if (fullText) {
-        conversationHistory.push({ role: 'assistant', content: fullText });
-        saveHistory();
-      }
-    } catch {
-      typingRow.remove();
-      appendMessage('Failed to connect. Please try again later.', 'bot');
+    } catch (err) {
+      appendMessage(err instanceof Error ? err.message : 'Failed to connect. Please try again later.', 'bot');
     } finally {
       sendBtn.disabled = false;
       input.disabled = false;
