@@ -3,10 +3,8 @@ export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { getHashnodeBlogs } from '../lib/hashnode';
 
 const profile = await import('../data/profile.json');
-const hashnodeBlogs = await getHashnodeBlogs(5);
 
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) =>
@@ -76,19 +74,14 @@ const sortedProjects = allProjects.sort((a, b) =>
 		<p style="margin-top: 1.5rem;"><a href="/projects">View all projects →</a></p>
 	</section>
 
-	<!-- Writing -->
-	<section class="section reveal">
-		<h2 class="section-title">Writing</h2>
-		<ul>
-			{hashnodeBlogs.map((post) => (
-				<li class="post-item">
-					<span class="post-date">{new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-					<a href={post.url} target="_blank" rel="noopener noreferrer">{post.title}</a>
-				</li>
-			))}
-		</ul>
-		<p style="margin-top: 1.5rem;"><a href="/blog">View all posts →</a></p>
-	</section>
+	{/*
+	  Writing section hidden: Hashnode retired free GraphQL API access
+	  (2026-05-13), so getHashnodeBlogs() returns []. To restore, either switch
+	  hashnode.ts to the RSS feed (blogs.haripatel.dev/rss.xml) or upgrade the
+	  publication to Hashnode Pro, then re-add this section, the getHashnodeBlogs
+	  import/call above, and the Blog nav link in Layout.astro. The external Blog
+	  link in Contact below still works (it points to the live blog site).
+	*/}
 
 	<!-- Contact -->
 	<section class="section reveal">

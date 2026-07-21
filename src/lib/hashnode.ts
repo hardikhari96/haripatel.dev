@@ -62,10 +62,23 @@ export async function getHashnodeBlogs(limit: number = 10): Promise<HashnodeBlog
       }),
     });
 
+    // Hashnode retired free GraphQL access (2026-05-13): unauthenticated
+    // requests now redirect to an HTML announcement page. Guard against
+    // non-OK / non-JSON responses so we degrade to an empty list quietly
+    // instead of throwing a JSON parse stack trace on every build.
+    const contentType = response.headers.get('content-type') || '';
+    if (!response.ok || !contentType.includes('application/json')) {
+      console.warn(
+        `Hashnode API unavailable (status ${response.status}, ${contentType || 'no content-type'}); returning no blogs. ` +
+          'The free GraphQL API now requires a Pro plan — switch to the RSS feed or upgrade to restore blogs.'
+      );
+      return [];
+    }
+
     const { data } = await response.json();
     return data?.publication?.posts?.edges?.map((edge: any) => edge.node) || [];
   } catch (error) {
-    console.error('Error fetching Hashnode blogs:', error);
+    console.warn('Hashnode blog fetch failed; returning no blogs:', error instanceof Error ? error.message : error);
     return [];
   }
 }

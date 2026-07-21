@@ -36,7 +36,8 @@ const { title, description, active = 'none' } = Astro.props;
 			<div class="nav-links">
 				<a href="/" class={active === 'home' ? 'active' : ''}>Home</a>
 				<a href="/projects" class={active === 'projects' ? 'active' : ''}>Projects</a>
-				<a href="/blog" class={active === 'blog' ? 'active' : ''}>Blog</a>
+				{/* Blog link hidden: Hashnode gated its free API (2026-05-13), so /blog is empty. Restore with the blog data source (RSS or Pro). */}
+				{/* <a href="/blog" class={active === 'blog' ? 'active' : ''}>Blog</a> */}
 				<button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
 					<span class="theme-icon-sun">☀️</span><span class="theme-icon-moon">🌙</span>
 				</button>
