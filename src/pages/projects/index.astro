@@ -1,257 +1,91 @@
 ---
 export const prerender = true;
 
-import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { getCurrentTheme } from '../../lib/theme';
-import SnowEffect from '../../components/SnowEffect.astro';
-import RainEffect from '../../components/RainEffect.astro';
-import LeafEffect from '../../components/LeafEffect.astro';
-import FestiveDecoration from '../../components/FestiveDecoration.astro';
-import SeasonDecoration from '../../components/SeasonDecoration.astro';
-import ThemeToggle from '../../components/ThemeToggle.astro';
-import ChatBot from '../../components/ChatBot.astro';
 
 const profile = await import('../../data/profile.json');
-const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 const allProjects = await getCollection('projects');
 
-// Sort by year (newest first)
-const sortedProjects = allProjects.sort((a, b) => 
-  (b.data.year || 0) - (a.data.year || 0)
+const sortedProjects = allProjects.sort((a, b) =>
+	(b.data.year || 0) - (a.data.year || 0)
 );
-
-// Group by category
 const personalProjects = sortedProjects.filter(p => p.data.category === 'personal');
 const companyProjects = sortedProjects.filter(p => p.data.category === 'company');
-
-// Get unique company names
 const companies = [...new Set(companyProjects.map(p => p.data.company).filter(Boolean))];
-
-console.log('All projects:', allProjects.length);
-console.log('Personal projects:', personalProjects.length);
-console.log('Company projects:', companyProjects.length);
-console.log('Companies:', companies);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="/fevicon.png" />
-	<meta name="viewport" content="width=device-width" />
-	<meta name="generator" content={Astro.generator} />
-	<meta name="robots" content="noindex, nofollow" />
-	<meta name="description" content={`Projects by ${profile.name}`} />
-	<title>Projects - {profile.name}</title>
-	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
-	<style>
-		.header-content {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 0.5rem;
-			flex-wrap: wrap;
-			gap: 1rem;
-		}
-
-		.nav {
-			display: flex;
-			gap: 1.5rem;
-		}
-
-		.nav a {
-			color: #666;
-			text-decoration: none;
-			font-size: 0.95rem;
-			transition: color 0.2s;
-		}
-
-		.nav a:hover,
-		.nav a.active {
-			color: #0066cc;
-		}
-
-		.filter-buttons {
-			display: flex;
-			gap: 1rem;
-			margin-bottom: 2rem;
-			flex-wrap: wrap;
-		}
-		.filter-btn {
-			padding: 0.5rem 1rem;
-			background: #fff;
-			border: 1px solid #000;
-			color: #000;
-			cursor: pointer;
-			font-size: 0.95rem;
-			font-family: inherit;
-			transition: all 0.2s;
-		}
-		.filter-btn:hover {
-			background: #000;
-			color: #fff;
-		}
-		.filter-btn.active {
-			background: #000;
-			color: #fff;
-		}
-		#company-filters {
-			padding-left: 0;
-			border-left: 3px solid #e0e0e0;
-			padding-left: 1.5rem;
-		}
-		.company-filter-btn {
-			padding: 0.4rem 0.9rem;
-			background: #f8f8f8;
-			border: 1px solid #ddd;
-			color: #444;
-			cursor: pointer;
-			font-size: 0.9rem;
-			font-family: inherit;
-			transition: all 0.2s;
-			border-radius: 4px;
-		}
-		.company-filter-btn:hover {
-			background: #e8e8e8;
-			border-color: #999;
-			color: #000;
-		}
-		.company-filter-btn.active {
-			background: #000;
-			color: #fff;
-			border-color: #000;
-		}
-
-		.company-badge {
-			display: inline-block;
-			margin-left: 0.75rem;
-			padding: 0.15rem 0.6rem;
-			background: #f0f0f0;
-			color: #555;
-			font-size: 0.85rem;
-			font-weight: normal;
-			border-radius: 3px;
-		}
-
-		@media (max-width: 768px) {
-			.header-content {
-				gap: 0.5rem;
-			}
-
-			.nav {
-				gap: 1rem;
-			}
-		}
-	</style>
-</head>
-<body>
-	<SeasonDecoration season={currentSeason} />
-	{enableSnow && <SnowEffect />}
-	{enableRain && <RainEffect />}
-	{enableLeaves && <LeafEffect season={currentSeason} />}
-	<!-- <ThemeToggle /> -->
-	<header>
-		<div class="header-content">
-			<h1>Harikrushna Patel<FestiveDecoration festival={currentFestival} /></h1>
-			<nav class="nav">
-				<a href="/">Home</a>
-				<a href="/projects" class="active">Projects</a>
-				<a href="/blog">Blog</a>
-			</nav>
-		</div>
-		<p class="tagline">Personal and professional work</p>
-	</header>
-
-	<!-- Filter Buttons -->
+<Layout title={`Projects - ${profile.name}`} description={`Projects by ${profile.name}`} active="projects">
 	<section class="section">
+		<h1 class="section-title" style="font-size: 1.8rem; margin-top: 2rem;">Projects</h1>
+		<p class="tagline-muted" style="margin-bottom: 2rem;">Personal and professional work</p>
+
 		<div class="filter-buttons">
 			<button class="filter-btn active" data-filter="all">All ({sortedProjects.length})</button>
 			<button class="filter-btn" data-filter="personal">Personal ({personalProjects.length})</button>
 			<button class="filter-btn" data-filter="company">Company ({companyProjects.length})</button>
 		</div>
-		<!-- Company Sub-filters -->
-		<div id="company-filters" class="filter-buttons" style="display: none; margin-top: 1rem; padding-left: 1rem;">
-			<button class="company-filter-btn active" data-company="all">All Companies</button>
+		<div id="company-filters" class="filter-buttons" style="display: none;">
+			<button class="filter-btn active" data-company="all">All Companies</button>
 			{companies.map((company) => (
-				<button class="company-filter-btn" data-company={company}>
+				<button class="filter-btn" data-company={company}>
 					{company} ({companyProjects.filter(p => p.data.company === company).length})
 				</button>
 			))}
 		</div>
-	</section>
 
-	<!-- All Projects -->
-	<section class="section">
-		<ul id="projects-list">
+		<div class="card-grid" id="projects-list">
 			{sortedProjects.map((project) => (
-				<li class="project-item" data-category={project.data.category || 'none'} data-company={project.data.company || ''}>
-					<div class="project-title">
-						<a href={`/projects/${project.slug}`}>{project.data.title}</a>
-						{project.data.company && (
-							<span class="company-badge">@ {project.data.company}</span>
-						)}
-					</div>
-					<p class="project-description">{project.data.description}</p>
+				<article class="card project-item" data-category={project.data.category || 'none'} data-company={project.data.company || ''}>
+					<h3><a href={`/projects/${project.slug}`}>{project.data.title}</a></h3>
+					<p class="card-meta">
+						{project.data.year}{project.data.company && ` · ${project.data.company}`}
+					</p>
+					<p>{project.data.description}</p>
 					{project.data.tags && project.data.tags.length > 0 && (
-						<div style="margin-top: 0.5rem;">
-							{project.data.tags.map((tag: string) => (
-								<span style="display: inline-block; background: #f0f0f0; padding: 0.1rem 0.5rem; margin-right: 0.5rem; font-size: 0.85rem; border-radius: 3px;">
-									{tag}
-								</span>
-							))}
+						<div class="chip-row">
+							{project.data.tags.slice(0, 5).map((tag: string) => <span class="chip">{tag}</span>)}
 						</div>
 					)}
-				</li>
+				</article>
 			))}
-		</ul>
+		</div>
 	</section>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
-			const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-			const companyFilterButtons = document.querySelectorAll<HTMLButtonElement>('.company-filter-btn');
+			const filterButtons = document.querySelectorAll<HTMLButtonElement>('button[data-filter]');
+			// Scoped to #company-filters — the project cards also carry data-company attributes.
+			const companyFilterButtons = document.querySelectorAll<HTMLButtonElement>('#company-filters button[data-company]');
 			const projectItems = document.querySelectorAll<HTMLElement>('.project-item');
 			const companyFilters = document.getElementById('company-filters');
 
 			let currentCategory = 'all';
 			let currentCompany = 'all';
 
-			// Category filter
 			filterButtons.forEach(button => {
 				button.addEventListener('click', () => {
-					const filter = button.dataset.filter;
-					currentCategory = filter || 'all';
-
-					// Update active button
+					currentCategory = button.dataset.filter || 'all';
 					filterButtons.forEach(btn => btn.classList.remove('active'));
 					button.classList.add('active');
 
-					// Show/hide company filters
-					if (filter === 'company' && companyFilters) {
+					if (currentCategory === 'company' && companyFilters) {
 						companyFilters.style.display = 'flex';
 					} else if (companyFilters) {
 						companyFilters.style.display = 'none';
 						currentCompany = 'all';
-						// Reset company filter buttons
 						companyFilterButtons.forEach(btn => btn.classList.remove('active'));
 						companyFilterButtons[0]?.classList.add('active');
 					}
-
 					filterProjects();
 				});
 			});
 
-			// Company filter
 			companyFilterButtons.forEach(button => {
 				button.addEventListener('click', () => {
-					const company = button.dataset.company;
-					currentCompany = company || 'all';
-
-					// Update active button
+					currentCompany = button.dataset.company || 'all';
 					companyFilterButtons.forEach(btn => btn.classList.remove('active'));
 					button.classList.add('active');
-
 					filterProjects();
 				});
 			});
@@ -260,26 +94,17 @@ console.log('Companies:', companies);
 				projectItems.forEach(item => {
 					const category = item.dataset.category;
 					const company = item.dataset.company;
-
-					let showItem = false;
-
-					// Check category filter
+					let show = false;
 					if (currentCategory === 'all' || category === currentCategory) {
-						// If company category is selected, also check company filter
 						if (currentCategory === 'company') {
-							if (currentCompany === 'all' || company === currentCompany) {
-								showItem = true;
-							}
+							show = currentCompany === 'all' || company === currentCompany;
 						} else {
-							showItem = true;
+							show = true;
 						}
 					}
-
-					item.style.display = showItem ? 'block' : 'none';
+					item.style.display = show ? '' : 'none';
 				});
 			}
 		});
 	</script>
-	<ChatBot />
-</body>
-</html>
+</Layout>

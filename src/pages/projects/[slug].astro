@@ -1,138 +1,50 @@
 ---
 export const prerender = true;
 
-import '../../styles/global.css';
+import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { getCurrentTheme } from '../../lib/theme';
-import SnowEffect from '../../components/SnowEffect.astro';
-import RainEffect from '../../components/RainEffect.astro';
-import LeafEffect from '../../components/LeafEffect.astro';
-import FestiveDecoration from '../../components/FestiveDecoration.astro';
-import SeasonDecoration from '../../components/SeasonDecoration.astro';
-import ThemeToggle from '../../components/ThemeToggle.astro';
-import ChatBot from '../../components/ChatBot.astro';
 
 export async function getStaticPaths() {
-  const projectEntries = await getCollection('projects');
-  return projectEntries.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+	const projectEntries = await getCollection('projects');
+	return projectEntries.map(entry => ({
+		params: { slug: entry.slug },
+		props: { entry },
+	}));
 }
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { festival: currentFestival, season: currentSeason, enableSnow, enableRain, enableLeaves } = getCurrentTheme();
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="/fevicon.png" />
-	<meta name="viewport" content="width=device-width" />
-	<meta name="generator" content={Astro.generator} />
-	<meta name="robots" content="noindex, nofollow" />
-	<meta name="description" content={entry.data.description || entry.data.title} />
-	<title>{entry.data.title} - Hari Patel</title>
-	<script defer src="https://cloud.umami.is/script.js" data-website-id="698c1618-48cf-423b-82af-eee68731e9c7"></script>
-</head>
-<body>
-	<SeasonDecoration season={currentSeason} />
-	{enableSnow && <SnowEffect />}
-	{enableRain && <RainEffect />}
-	{enableLeaves && <LeafEffect season={currentSeason} />}
-	<!-- <ThemeToggle /> -->
-	<header>
-		<a href="/">← Back to home</a>
-	</header>
-
+<Layout title={`${entry.data.title} - Hari Patel`} description={entry.data.description || entry.data.title} active="projects">
 	<article class="section">
-		<h1>{entry.data.title}</h1>
-		<p class="tagline">
-			{entry.data.year && `${entry.data.year} • `}
+		<p style="margin-top: 1.5rem;"><a href="/projects">← All projects</a></p>
+		<h1 style="font-size: 2rem; margin-top: 1rem;">{entry.data.title}</h1>
+		<p class="tagline-muted" style="margin-top: 0.4rem;">
+			{entry.data.year && `${entry.data.year} · `}
 			{entry.data.category && entry.data.category.charAt(0).toUpperCase() + entry.data.category.slice(1)}
+			{entry.data.company && ` · ${entry.data.company}`}
 		</p>
-		
+
 		{entry.data.tags && entry.data.tags.length > 0 && (
-			<div style="margin-top: 1rem; margin-bottom: 2rem;">
-				{entry.data.tags.map((tag: string) => (
-					<span style="display: inline-block; background: #f0f0f0; padding: 0.1rem 0.5rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 3px; font-size: 0.9rem;">
-						{tag}
-					</span>
-				))}
+			<div class="chip-row" style="margin: 1rem 0 2rem;">
+				{entry.data.tags.map((tag: string) => <span class="chip">{tag}</span>)}
 			</div>
 		)}
 
-		<div class="blog-content">
+		<div class="prose">
 			<Content />
 		</div>
 
 		{(entry.data.github || entry.data.link) && (
-			<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
+			<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; gap: 1rem; flex-wrap: wrap;">
 				{entry.data.github && (
-					<p><a href={entry.data.github} target="_blank" rel="noopener">View on GitHub →</a></p>
+					<a href={entry.data.github} target="_blank" rel="noopener" class="btn btn-ghost">View on GitHub →</a>
 				)}
 				{entry.data.link && (
-					<p><a href={entry.data.link} target="_blank" rel="noopener">Visit Project →</a></p>
+					<a href={entry.data.link} target="_blank" rel="noopener" class="btn btn-primary">Visit Project →</a>
 				)}
 			</div>
 		)}
 	</article>
-	<ChatBot />
-</body>
-</html>
-
-<style>
-	.blog-content {
-		margin-top: 2rem;
-	}
-
-	.blog-content :global(h2) {
-		margin-top: 2rem;
-		margin-bottom: 1rem;
-	}
-
-	.blog-content :global(h3) {
-		margin-top: 1.5rem;
-		margin-bottom: 0.75rem;
-	}
-
-	.blog-content :global(p) {
-		margin-bottom: 1rem;
-	}
-
-	.blog-content :global(pre) {
-		background: #f5f5f5;
-		padding: 1rem;
-		overflow-x: auto;
-		margin-bottom: 1rem;
-		border: 1px solid #e0e0e0;
-	}
-
-	.blog-content :global(code) {
-		font-family: 'Courier New', monospace;
-		font-size: 0.9rem;
-	}
-
-	.blog-content :global(ul),
-	.blog-content :global(ol) {
-		margin-left: 2rem;
-		margin-bottom: 1rem;
-	}
-
-	.blog-content :global(li) {
-		margin-bottom: 0.5rem;
-	}
-
-	.blog-content :global(blockquote) {
-		border-left: 3px solid #0066cc;
-		padding-left: 1rem;
-		margin: 1.5rem 0;
-		color: #333;
-	}
-
-	.blog-content :global(strong) {
-		font-weight: 600;
-	}
-</style>
+</Layout>
